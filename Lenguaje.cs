@@ -67,6 +67,17 @@ namespace Semantica
             }
             return value;
         }
+        private Variable.TipoDato getType(string nameVariable)
+        {
+            foreach (Variable v in listaVariables)
+            {
+                if (v.getNombre().Equals(nameVariable))
+                {
+                    return v.getTipo();
+                }
+            }
+            return Variable.TipoDato.Char;
+        }
         //Programa -> Librerias? Variables? Main
         public void Programa()
         {
@@ -170,12 +181,29 @@ namespace Semantica
                 //nextToken();
             }
         }
+        private Variable.TipoDato evaluaNumero(float resultado)
+        {
+            if (resultado <= 255)
+            {
+                return Variable.TipoDato.Char;
+            }
+            else if (resultado <= 65535)
+            {
+                return Variable.TipoDato.Int;
+            }
+            return Variable.TipoDato.Float;
+        }
+        private bool evaluaSemantica(string variable, float resultado)
+        {
+            Variable.TipoDato type = getType(variable);
+            return false;
+        }
         // Asignacion -> identificador = cadena | Expresion ;
         private void Asignacion()
         {
             //Requerimiento 2. Si no existe la variable, se levanta la excepción.
             if (!existeVariable(getContenido()))
-                throw new Error("\nError Semantico en linea " + linea + ". No existe la variable \"" + getContenido() + "\"", Log);
+                throw new Error("\nError de sintaxis en linea " + linea + ". No existe la variable \"" + getContenido() + "\"", Log);
             string name = getContenido();
             match(tipos.Identificador);
             if (getContenido() == "=")
@@ -226,7 +254,7 @@ namespace Semantica
             match("&");
             //Requerimiento 2. Si no existe la variable, se levanta la excepción.
             if (!existeVariable(getContenido()))
-                throw new Error("\nError Semantico en linea " + linea + ". No existe la variable \"" + getContenido() + "\"", Log);
+                throw new Error("\nError de sintaxis en linea " + linea + ". No existe la variable \"" + getContenido() + "\"", Log);
             string value = "" + Console.ReadLine();
             //Requerimiento 5. Modificar el valor de la variable.
             modValor(getContenido(), float.Parse(value));
@@ -300,7 +328,7 @@ namespace Semantica
         {
             //Requerimiento 2. Si no existe la variable, se levanta la excepción.
             if (!existeVariable(getContenido()))
-                throw new Error("\nError Semantico en linea " + linea + ". No existe la variable \"" + getContenido() + "\"", Log);
+                throw new Error("\nError de sintaxis en linea " + linea + ". No existe la variable \"" + getContenido() + "\"", Log);
             string variable = getContenido();
             match(tipos.Identificador);
             if (getClasificacion() == tipos.IncrementoTermino)
@@ -477,7 +505,7 @@ namespace Semantica
             {
                 //Requerimiento 2. Si no existe la variable, se levanta la excepción.
                 if (!existeVariable(getContenido()))
-                    throw new Error("\nError semantico en linea " + linea + ". No existe la variable \"" + getContenido() + "\"", Log);
+                    throw new Error("\nError de sintaxis en linea " + linea + ". No existe la variable \"" + getContenido() + "\"", Log);
                 Log.Write(getContenido() + " ");
                 stackOperandos.Push(getValor(getContenido()));
                 match(tipos.Identificador);
