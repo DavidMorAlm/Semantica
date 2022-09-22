@@ -12,6 +12,7 @@ namespace Semantica
     {
         List<Variable> listaVariables = new List<Variable>();
         Stack<float> stackOperandos = new Stack<float>();
+        Variable.TipoDato dominante;
         public Lenguaje()
         {
 
@@ -183,6 +184,10 @@ namespace Semantica
         }
         private Variable.TipoDato evaluaNumero(float resultado)
         {
+            if (resultado % 1 != 0)
+            {
+                return Variable.TipoDato.Float;
+            }
             if (resultado <= 255)
             {
                 return Variable.TipoDato.Char;
@@ -211,12 +216,26 @@ namespace Semantica
                 Log.WriteLine();
                 Log.Write(name + " = ");
                 match("=");
+                dominante = Variable.TipoDato.Char;
                 Expresion();
                 match(";");
                 float resultado = stackOperandos.Pop();
                 Log.Write("= " + resultado);
                 Log.WriteLine();
-                modValor(name, resultado);
+                Console.WriteLine(dominante);
+                Console.WriteLine(evaluaNumero(resultado));
+                if (dominante < evaluaNumero(resultado))
+                {
+                    dominante = evaluaNumero(resultado);
+                }
+                if (dominante <= getType(name))
+                {
+                    modValor(name, resultado);
+                }
+                else
+                {
+                    throw new Error("Error de semantica. No se puede asignar un <" + dominante + "> a un <" + getType(name) + ">", Log);
+                }
             }
             else
             {
@@ -498,6 +517,10 @@ namespace Semantica
             if (getClasificacion() == tipos.Numero)
             {
                 Log.Write(getContenido() + " ");
+                if (dominante < evaluaNumero(float.Parse(getContenido())))
+                {
+                    dominante = evaluaNumero(float.Parse(getContenido()));
+                }
                 stackOperandos.Push(float.Parse(getContenido()));
                 match(tipos.Numero);
             }
