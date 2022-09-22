@@ -20,7 +20,6 @@ namespace Semantica
             }
             else
             {
-                //Requerimiento 9: Agregar el número de linea en el error.
                 throw new Error("Error de Sintaxis en linea " + linea + ". " + "Se espera " + espera, Log);
             }
         }
@@ -32,7 +31,6 @@ namespace Semantica
             }
             else
             {
-                //Requerimiento 9: Agregar el número de linea en el error.
                 throw new Error("Error de Sintaxis en linea " + linea + ". " + "Se espera " + espera + ".", Log);
             }
         }

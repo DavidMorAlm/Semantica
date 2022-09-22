@@ -1,8 +1,11 @@
-//Requerimiento 1: Eliminar las comillas del printf e interpretar las secuencias de escape dentro de la cadena.
-//Requerimiento 2: Marcar los errores sintácticos cuando la variable no exista.
-//Requerimiento 3: Modificar el valor de la variable en la Asignacion.
-//Requerimiento 4: Obtener el valor de la variable cuando se requiera y programar el método getValor()
-//Requerimiento 5: Modificar el valor de la variable en el Scanf.
+//Requerimiento 1: Actualizar el dominante para variables en la expresion.
+//                 Ejemplo : float x; char y; y = x;
+//Requerimiento 2: Actualizar el dominante para el casteo y el valor de la subexpresion.
+//Requerimiento 3: Programar un metodo de conversion de un vaor a un tipo de dato.
+//                 Ejemplo: private float convert(float value, string tipoDato)
+//                 Deberan usar el residuo de la division %255 , %65535
+//Requerimiento 4: 
+//Requerimiento 5: 
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
@@ -44,7 +47,6 @@ namespace Semantica
         }
         private void modValor(string name, float newValue)
         {
-            //Requerimiento 3
             foreach (Variable v in listaVariables)
             {
                 if (v.getNombre().Equals(name))
@@ -56,7 +58,6 @@ namespace Semantica
         }
         private float getValor(string nameVariable)
         {
-            //Requerimiento 4.
             float value = 0;
             foreach (Variable v in listaVariables)
             {
@@ -79,7 +80,7 @@ namespace Semantica
             }
             return Variable.TipoDato.Char;
         }
-        //Programa -> Librerias? Variables? Main
+        // Programa -> Librerias? Variables? Main
         public void Programa()
         {
             Librerias();
@@ -206,7 +207,6 @@ namespace Semantica
         // Asignacion -> identificador = cadena | Expresion ;
         private void Asignacion()
         {
-            //Requerimiento 2. Si no existe la variable, se levanta la excepción.
             if (!existeVariable(getContenido()))
                 throw new Error("\nError de sintaxis en linea " + linea + ". No existe la variable \"" + getContenido() + "\"", Log);
             string name = getContenido();
@@ -271,11 +271,9 @@ namespace Semantica
             match(tipos.Cadena);
             match(",");
             match("&");
-            //Requerimiento 2. Si no existe la variable, se levanta la excepción.
             if (!existeVariable(getContenido()))
                 throw new Error("\nError de sintaxis en linea " + linea + ". No existe la variable \"" + getContenido() + "\"", Log);
             string value = "" + Console.ReadLine();
-            //Requerimiento 5. Modificar el valor de la variable.
             modValor(getContenido(), float.Parse(value));
             match(tipos.Identificador);
             match(")");
@@ -345,7 +343,6 @@ namespace Semantica
         // Incremento -> identificador ++ | --
         private void Incremento()
         {
-            //Requerimiento 2. Si no existe la variable, se levanta la excepción.
             if (!existeVariable(getContenido()))
                 throw new Error("\nError de sintaxis en linea " + linea + ". No existe la variable \"" + getContenido() + "\"", Log);
             string variable = getContenido();
@@ -526,18 +523,48 @@ namespace Semantica
             }
             else if (getClasificacion() == tipos.Identificador)
             {
-                //Requerimiento 2. Si no existe la variable, se levanta la excepción.
                 if (!existeVariable(getContenido()))
                     throw new Error("\nError de sintaxis en linea " + linea + ". No existe la variable \"" + getContenido() + "\"", Log);
+                //Requerimiento 1.
                 Log.Write(getContenido() + " ");
                 stackOperandos.Push(getValor(getContenido()));
                 match(tipos.Identificador);
             }
             else
             {
+                bool huboCast = false;
+                Variable.TipoDato cast = Variable.TipoDato.Char;
                 match("(");
+                if (getClasificacion() == tipos.TipoDato)
+                {
+                    huboCast = true;
+                    switch (getContenido())
+                    {
+                        case "char":
+                            cast = Variable.TipoDato.Char;
+                            break;
+                        case "int":
+                            cast = Variable.TipoDato.Int;
+                            break;
+                        case "float":
+                            cast = Variable.TipoDato.Float;
+                            break;
+                    }
+                    match(tipos.TipoDato);
+                    match(")");
+                    match("(");
+                }
                 Expresion();
                 match(")");
+                if (huboCast)
+                {
+                    //Requerimiento 2.
+                    //Saco elemento del stackOperandos
+                    //Convierto ese valor al equivalente en casteo
+                    //Requerimiento 3.
+                    //  Ejemplo: Si el casteo es: (char) y el pop regresa un 256, 
+                    //  el valor equivalente en casteo es el cero.
+                }
             }
         }
     }

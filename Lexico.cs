@@ -60,7 +60,7 @@ namespace Semantica
             Log.AutoFlush = true;
             //Log.WriteLine("Primer constructor");
             Log.WriteLine("Archivo: prueba.cpp");
-            Log.WriteLine("Compilado: " + DateTime.Now.ToString("El dd/MM/yyyy a la\'s\' HH:mm:ss")); //Requerimiento 1.
+            Log.WriteLine("Compilado: " + DateTime.Now.ToString("El dd/MM/yyyy a la\'s\' HH:mm:ss"));
             //Investigar como checar si existe un archivo o no.
             if (File.Exists(@"/Users/davidmoralm/Documents/Semantica/Prueba.cpp"))
             {
@@ -80,7 +80,7 @@ namespace Semantica
             Log.AutoFlush = true;
             //Log.WriteLine("Segundo constructor");
             Log.WriteLine("Archivo: " + nombre);
-            Log.WriteLine("Compilado: " + DateTime.Now.ToString("El dd/MM/yyyy a la\'s\' HH:mm:ss")); //Requerimiento 1.
+            Log.WriteLine("Compilado: " + DateTime.Now.ToString("El dd/MM/yyyy a la\'s\' HH:mm:ss"));
             //Investigar como checar si existe un archivo o no.
             if (File.Exists(nombre))
             {
@@ -310,7 +310,6 @@ namespace Semantica
             }
             if (estado == E)
             {
-                //Requerimiento 9: Agregar el número de linea en el error.
                 if (getContenido()[0] == '"')
                 {
                     throw new Error("Error léxico en linea " + linea + ". " + "No se cerro el string con: \"",Log);
