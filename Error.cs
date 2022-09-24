@@ -1,3 +1,6 @@
+/*
+    Morales Almeida David
+*/
 using System.IO;
 
 namespace Semantica

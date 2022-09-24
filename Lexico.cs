@@ -1,3 +1,6 @@
+/*
+    Morales Almeida David
+*/
 namespace Semantica
 {
     public class Lexico : Token
