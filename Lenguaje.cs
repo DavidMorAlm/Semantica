@@ -9,6 +9,7 @@
 //                 Deberan usar el residuo de la division %255 , %65535
 //Requerimiento 4: Evaluar nuevamente la condicion del if-else, while, for, do while con respecto al parametro que recibe
 //Requerimiento 5: Levantar una Excepcion en el Scanf cuando la captura no sea un numero.
+//Requerimiento 6: Ejecutar el For()
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
@@ -358,14 +359,22 @@ namespace Semantica
             match("(");
             Asignacion(evaluacion);
             //Requerimiento 4.
+            //Requerimiento 6:
+            //  a) Necesito guardar la posición de lectura en el archivo de texto.
             bool validarFor = Condicion();
-            match(";");
-            Incremento(evaluacion);
-            match(")");
-            if (getContenido() == "{")
-                Bloque_Instrucciones(evaluacion);
-            else
-                Instruccion(evaluacion);
+            //  b) Metemos un ciclo while despues de validar el For
+            //while()
+            //{
+                match(";");
+                Incremento(evaluacion);
+                match(")");
+                if (getContenido() == "{")
+                    Bloque_Instrucciones(evaluacion);
+                else
+                    Instruccion(evaluacion);
+                //c) Regresar a la posición de lectura del archivo
+                //d) Sacar otro Token
+            //}        
         }
         // Incremento -> identificador ++ | --
         private void Incremento(bool evaluacion)
