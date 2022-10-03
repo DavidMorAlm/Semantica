@@ -4,7 +4,7 @@
 //Requerimiento 1: Actualizar el dominante para variables en la expresion.
 //                 Ejemplo : float x; char y; y = x;
 //Requerimiento 2: Actualizar el dominante para el casteo y el valor de la subexpresion.
-//Requerimiento 3: Programar un metodo de conversion de un vaor a un tipo de dato.
+//Requerimiento 3: Programar un metodo de conversion de un valor a un tipo de dato.
 //                 Ejemplo: private float convert(float value, string tipoDato)
 //                 Deberan usar el residuo de la division %255 , %65535
 //Requerimiento 4: Evaluar nuevamente la condicion del if-else, while, for, do while con respecto al parametro que recibe
@@ -248,7 +248,7 @@ namespace Semantica
                 }
                 else
                 {
-                    throw new Error("Error de semantica. No se puede asignar un <" + dominante + "> a un <" + getType(name) + ">", Log);
+                    throw new Error("Error de semantica en la linea " + linea + ". No se puede asignar un <" + dominante + "> a un <" + getType(name) + ">", Log);
                 }
             }
             else
@@ -574,6 +574,10 @@ namespace Semantica
                 if (!existeVariable(getContenido()))
                     throw new Error("\nError de sintaxis en linea " + linea + ". No existe la variable \"" + getContenido() + "\"", Log);
                 //Requerimiento 1.
+                if (dominante < getType(getContenido()))
+                {
+                    dominante = getType(getContenido());
+                }
                 Log.Write(getContenido() + " ");
                 stackOperandos.Push(getValor(getContenido()));
                 match(tipos.Identificador);
