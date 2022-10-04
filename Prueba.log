@@ -1,3 +1,11 @@
 Archivo: prueba.cpp
-Compilado: El 03/10/2022 a las 20:51:08
-Error de semantica en linea 18. No se puede asignar "davicito" a un <Int>
+Compilado: El 03/10/2022 a las 21:23:31
+3 5 + 10 1 1 
+
+Variables: 
+area Float 0
+radio Float 0
+pi Float 0
+resultado Float 0
+x Int 0
+y Char 0

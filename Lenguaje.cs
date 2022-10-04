@@ -333,17 +333,17 @@ namespace Semantica
             bool validarIf = Condicion();
             match(")");
             if (getContenido() == "{")
-                Bloque_Instrucciones(validarIf);
+                Bloque_Instrucciones(validarIf && evaluacion);
             else
-                Instruccion(validarIf);
+                Instruccion(validarIf && evaluacion);
             if (getContenido() == "else")
             {
                 match("else");
                 //Requerimiento 4.
                 if (getContenido() == "{")
-                    Bloque_Instrucciones(validarIf);
+                    Bloque_Instrucciones(!validarIf && evaluacion);
                 else
-                    Instruccion(validarIf);
+                    Instruccion(!validarIf && evaluacion);
             }
         }
         // While -> while(Condicion) Bloque_Instrucciones | Instruccion
