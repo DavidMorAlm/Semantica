@@ -1,5 +1,15 @@
 Archivo: prueba.cpp
-Compilado: El 03/10/2022 a las 09:38:37
+Compilado: El 03/10/2022 a las 20:24:56
 
-y = x = 0
-Error de semantica en la linea 19. No se puede asignar un <Float> a un <Char>
+x = 300 = 300
+
+y = x = 44
+
+
+Variables: 
+area Float 0
+radio Float 0
+pi Float 0
+resultado Float 0
+x Int 300
+y Char 44

@@ -5,7 +5,7 @@
 //                 Ejemplo : float x; char y; y = x;
 //Requerimiento 2: Actualizar el dominante para el casteo y el valor de la subexpresion.
 //Requerimiento 3: Programar un metodo de conversion de un valor a un tipo de dato.
-//                 Ejemplo: private float convert(float value, string tipoDato)
+//                 Ejemplo: private float convert(float value, Variable.TipoDato)
 //                 Deberan usar el residuo de la division %255 , %65535
 //Requerimiento 4: Evaluar nuevamente la condicion del if-else, while, for, do while con respecto al parametro que recibe
 //Requerimiento 5: Levantar una Excepcion en el Scanf cuando la captura no sea un numero.
@@ -83,6 +83,21 @@ namespace Semantica
                 }
             }
             return Variable.TipoDato.Char;
+        }
+        private float convert(float value, Variable.TipoDato cast)
+        { 
+            if (evaluaNumero(value) == Variable.TipoDato.Float && cast != Variable.TipoDato.Float)
+                value = value - (value % 1);   
+            switch (cast)
+            {
+                case Variable.TipoDato.Char:
+                    value = value % 256;
+                    break;
+                case Variable.TipoDato.Int:
+                    value =  value % 65536;
+                    break;
+            }
+            return value;
         }
         // Programa -> Librerias? Variables? Main
         public void Programa()
@@ -613,6 +628,9 @@ namespace Semantica
                     //Requerimiento 2.
                     //Saco elemento del stackOperandos
                     //Convierto ese valor al equivalente en casteo
+                    dominante = cast;
+                    float value = convert(stackOperandos.Pop(), cast);
+                    stackOperandos.Push(value);
                     //Requerimiento 3.
                     //  Ejemplo: Si el casteo es: (char) y el pop regresa un 256, 
                     //  el valor equivalente en casteo es el cero.
