@@ -1,5 +1,5 @@
 Archivo: prueba.cpp
-Compilado: El 03/10/2022 a las 21:23:31
+Compilado: El 03/10/2022 a las 22:54:41
 3 5 + 10 1 1 
 
 Variables: 
@@ -8,4 +8,4 @@ radio Float 0
 pi Float 0
 resultado Float 0
 x Int 0
-y Char 0
+y Float 0

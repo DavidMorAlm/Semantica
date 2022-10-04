@@ -355,9 +355,9 @@ namespace Semantica
             bool validarWhile = Condicion();
             match(")");
             if (getContenido() == "{")
-                Bloque_Instrucciones(evaluacion);
+                Bloque_Instrucciones(evaluacion && validarWhile);
             else
-                Instruccion(evaluacion);
+                Instruccion(evaluacion && validarWhile);
         }
         // Do -> do Bloque_Instrucciones | Instruccion while(Condicion);
         private void Do(bool evaluacion)
@@ -388,12 +388,12 @@ namespace Semantica
             //while()
             //{
                 match(";");
-                Incremento(evaluacion);
+                Incremento(evaluacion && validarFor);
                 match(")");
                 if (getContenido() == "{")
-                    Bloque_Instrucciones(evaluacion);
+                    Bloque_Instrucciones(evaluacion && validarFor);
                 else
-                    Instruccion(evaluacion);
+                    Instruccion(evaluacion && validarFor);
                 //c) Regresar a la posición de lectura del archivo
                 //d) Sacar otro Token
             //}        
