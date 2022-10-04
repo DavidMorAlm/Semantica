@@ -307,13 +307,20 @@ namespace Semantica
             match("&");
             if (!existeVariable(getContenido()))
                 throw new Error("\nError de sintaxis en linea " + linea + ". No existe la variable \"" + getContenido() + "\"", Log);
-            match(tipos.Identificador);
             if (evaluacion)
             {
                 string value = "" + Console.ReadLine();
                 //Requerimiento 5.
-                modValor(getContenido(), float.Parse(value));
+                try
+                {
+                    modValor(getContenido(), float.Parse(value));
+                }
+                catch (Exception)
+                {
+                    throw new Error("Error de semantica en linea " + linea + ". No se puede asignar \"" + value + "\" a un <" + getType(getContenido()) + ">", Log);
+                }
             }
+            match(tipos.Identificador);
             match(")");
             match(";");
         }

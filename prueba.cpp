@@ -15,4 +15,5 @@ void main()
         if (1 == 1)
             printf("hola");
     }*/
+    scanf("%d", &x);
 }
