@@ -7,13 +7,19 @@
 float area, radio, pi, resultado;
 int x;
 int y;
+int z;
 // Este programa calcula el volumen de un cilindro.
 void main()
 {
-    for (x = 0; x < 10; x++)
+    printf("Introduce el numero de renglones para la piramide: ");
+    scanf("%d", &z);
+
+    for (x = 1; x <= z; x++)
     {
-        printf(x);
-        printf(" Hola mundo");
+        for (y = 0; y < x; y++)
+        {
+            printf(x);
+        }
         printf("\n");
     }
 }

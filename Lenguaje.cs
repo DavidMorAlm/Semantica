@@ -402,6 +402,8 @@ namespace Semantica
                     Bloque_Instrucciones(evaluacion && validarFor);
                 else
                     Instruccion(evaluacion && validarFor);
+                if (evaluacion && validarFor)
+                    modValor(name, getValor(name) + 1);
                 //c) Regresar a la posición de lectura del archivo
                 //d) Sacar otro Token
                 //Regreso a la posicion original.
@@ -419,14 +421,14 @@ namespace Semantica
                 if (getContenido()[0] == '+')
                 {
                     match("++");
-                    if (evaluacion)
-                        modValor(variable, getValor(variable) + 1);
+                    //if (evaluacion)
+                    //    modValor(variable, getValor(variable) + 1);
                 }
                 else
                 {
                     match("--");
-                    if (evaluacion)
-                        modValor(variable, getValor(variable) - 1);
+                    //if (evaluacion)
+                    //    modValor(variable, getValor(variable) - 1);
                 }
             }
             else
