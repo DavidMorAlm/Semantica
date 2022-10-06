@@ -6,13 +6,14 @@
 #include <conio.h>
 float area, radio, pi, resultado;
 int x;
-float y;
+int y;
 // Este programa calcula el volumen de un cilindro.
 void main()
 {
-    if (3 + 5 > 10)
+    for (x = 0; x < 10; x++)
     {
-        if (1 == 1)
-            printf("hola");
+        printf(x);
+        printf(" Hola mundo");
+        printf("\n");
     }
 }

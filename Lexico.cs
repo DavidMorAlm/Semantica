@@ -10,6 +10,7 @@ namespace Semantica
         const int F = -1;
         const int E = -2;
         protected int linea;
+        protected int position;
         int[,] TRAND = new int[,]
         {   
             //WS,EF,EL,L, D, ., E, +, -, =, :, ;, &, |, !, >, <, *, %, /, ", ', #, ?,La
@@ -58,6 +59,7 @@ namespace Semantica
         };
         public Lexico()   //Constructor 1
         {
+            position = 0;
             linea = 1;
             Log = new StreamWriter("/Users/davidmoralm/Documents/Semantica/Prueba.log");
             Log.AutoFlush = true;
@@ -76,6 +78,7 @@ namespace Semantica
         }
         public Lexico(string nombre)   //Constructor 2
         {
+            position = 0;
             linea = 1;
             Log = new StreamWriter(Path.ChangeExtension(nombre, ".log"));
             //Usar el objeto Path
@@ -272,7 +275,7 @@ namespace Semantica
                 clasifica(estado);
                 if (estado >= 0)
                 {
-                    archivo.Read();
+                    archivo.Read(); position++;
                     if (c == '\n')
                     {
                         linea++;

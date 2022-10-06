@@ -1,11 +1,11 @@
 Archivo: prueba.cpp
-Compilado: El 03/10/2022 a las 22:54:41
-3 5 + 10 1 1 
+Compilado: El 06/10/2022 a las 00:16:46
+
 
 Variables: 
 area Float 0
 radio Float 0
 pi Float 0
 resultado Float 0
-x Int 0
-y Float 0
+x Int 10
+y Int 0

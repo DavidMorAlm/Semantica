@@ -85,16 +85,16 @@ namespace Semantica
             return Variable.TipoDato.Char;
         }
         private float convert(float value, Variable.TipoDato cast)
-        { 
+        {
             if (evaluaNumero(value) == Variable.TipoDato.Float && cast != Variable.TipoDato.Float)
-                value = value - (value % 1);   
+                value = value - (value % 1);
             switch (cast)
             {
                 case Variable.TipoDato.Char:
                     value = value % 256;
                     break;
                 case Variable.TipoDato.Int:
-                    value =  value % 65536;
+                    value = value % 65536;
                     break;
             }
             return value;
@@ -241,17 +241,17 @@ namespace Semantica
             match(tipos.Identificador);
             if (getContenido() == "=")
             {
-                Log.WriteLine();
-                Log.Write(name + " = ");
+                //Log.WriteLine();
+                //Log.Write(name + " = ");
                 match("=");
                 dominante = Variable.TipoDato.Char;
                 Expresion();
                 match(";");
                 float resultado = stackOperandos.Pop();
-                Log.Write("= " + resultado);
-                Log.WriteLine();
-                Console.WriteLine(dominante);
-                Console.WriteLine(evaluaNumero(resultado));
+                //Log.Write("= " + resultado);
+                //Log.WriteLine();
+                //Console.WriteLine(dominante);
+                //Console.WriteLine(evaluaNumero(resultado));
                 if (dominante < evaluaNumero(resultado))
                 {
                     dominante = evaluaNumero(resultado);
@@ -305,22 +305,23 @@ namespace Semantica
             match(tipos.Cadena);
             match(",");
             match("&");
-            if (!existeVariable(getContenido()))
-                throw new Error("\nError de sintaxis en linea " + linea + ". No existe la variable \"" + getContenido() + "\"", Log);
+            string name = getContenido();
+            match(tipos.Identificador);
+            if (!existeVariable(name))
+                throw new Error("\nError de sintaxis en linea " + linea + ". No existe la variable \"" + name + "\"", Log);
             if (evaluacion)
             {
                 string value = "" + Console.ReadLine();
                 //Requerimiento 5.
                 try
                 {
-                    modValor(getContenido(), float.Parse(value));
+                    modValor(name, float.Parse(value));
                 }
                 catch (Exception)
                 {
                     throw new Error("Error de semantica en linea " + linea + ". No se puede asignar \"" + value + "\" a un <" + getType(getContenido()) + ">", Log);
                 }
             }
-            match(tipos.Identificador);
             match(")");
             match(";");
         }
@@ -383,10 +384,17 @@ namespace Semantica
             //Requerimiento 4.
             //Requerimiento 6:
             //  a) Necesito guardar la posición de lectura en el archivo de texto.
+            int posicionAct = position - 2;
+            string name = getContenido();
             bool validarFor = Condicion();
             //  b) Metemos un ciclo while despues de validar el For
-            //while()
-            //{
+            do
+            {
+                archivo.DiscardBufferedData();
+                archivo.BaseStream.Seek(posicionAct, SeekOrigin.Begin);
+                position = posicionAct;
+                nextToken();
+                validarFor = Condicion();
                 match(";");
                 Incremento(evaluacion && validarFor);
                 match(")");
@@ -396,7 +404,8 @@ namespace Semantica
                     Instruccion(evaluacion && validarFor);
                 //c) Regresar a la posición de lectura del archivo
                 //d) Sacar otro Token
-            //}        
+                //Regreso a la posicion original.
+            } while (evaluacion && validarFor);
         }
         // Incremento -> identificador ++ | --
         private void Incremento(bool evaluacion)
@@ -536,7 +545,7 @@ namespace Semantica
                 string operador = getContenido();
                 match(tipos.OperadorTermino);
                 Termino();
-                Log.Write(operador + " ");
+                // Log.Write(operador + " ");
                 float n1 = stackOperandos.Pop();
                 float n2 = stackOperandos.Pop();
                 switch (operador)
@@ -564,7 +573,7 @@ namespace Semantica
                 string operador = getContenido();
                 match(tipos.OperadorFactor);
                 Factor();
-                Log.Write(operador + " ");
+                //Log.Write(operador + " ");
                 float n1 = stackOperandos.Pop();
                 float n2 = stackOperandos.Pop();
                 switch (operador)
@@ -583,11 +592,11 @@ namespace Semantica
         {
             if (getClasificacion() == tipos.Numero)
             {
-                Log.Write(getContenido() + " ");
                 if (dominante < evaluaNumero(float.Parse(getContenido())))
                 {
                     dominante = evaluaNumero(float.Parse(getContenido()));
                 }
+                //Log.Write(getContenido() + " ");
                 stackOperandos.Push(float.Parse(getContenido()));
                 match(tipos.Numero);
             }
@@ -600,7 +609,7 @@ namespace Semantica
                 {
                     dominante = getType(getContenido());
                 }
-                Log.Write(getContenido() + " ");
+                //Log.Write(getContenido() + " ");
                 stackOperandos.Push(getValor(getContenido()));
                 match(tipos.Identificador);
             }
