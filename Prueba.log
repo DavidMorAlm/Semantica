@@ -1,12 +1,3 @@
 Archivo: prueba.cpp
-Compilado: El 06/10/2022 a las 01:47:09
-
-
-Variables: 
-area Float 0
-radio Float 0
-pi Float 0
-resultado Float 0
-x Int 11
-y Int 10
-z Int 10
+Compilado: El 06/10/2022 a las 10:33:44
+Error de semantica en la linea 43. No se puede asignar un <Int> a un <Char>

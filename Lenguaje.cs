@@ -385,6 +385,7 @@ namespace Semantica
             //Requerimiento 6:
             //  a) Necesito guardar la posición de lectura en el archivo de texto.
             int posicionAct = position - 2;
+            int lineaAct = linea;
             string name = getContenido();
             bool validarFor = Condicion();
             //  b) Metemos un ciclo while despues de validar el For
@@ -393,6 +394,7 @@ namespace Semantica
                 archivo.DiscardBufferedData();
                 archivo.BaseStream.Seek(posicionAct, SeekOrigin.Begin);
                 position = posicionAct;
+                linea = lineaAct;
                 nextToken();
                 validarFor = Condicion();
                 match(";");
@@ -402,8 +404,6 @@ namespace Semantica
                     Bloque_Instrucciones(evaluacion && validarFor);
                 else
                     Instruccion(evaluacion && validarFor);
-                if (evaluacion && validarFor)
-                    modValor(name, getValor(name) + 1);
                 //c) Regresar a la posición de lectura del archivo
                 //d) Sacar otro Token
                 //Regreso a la posicion original.
@@ -421,14 +421,14 @@ namespace Semantica
                 if (getContenido()[0] == '+')
                 {
                     match("++");
-                    //if (evaluacion)
-                    //    modValor(variable, getValor(variable) + 1);
+                    if (evaluacion)
+                        modValor(variable, getValor(variable) + 1);
                 }
                 else
                 {
                     match("--");
-                    //if (evaluacion)
-                    //    modValor(variable, getValor(variable) - 1);
+                    if (evaluacion)
+                        modValor(variable, getValor(variable) - 1);
                 }
             }
             else
