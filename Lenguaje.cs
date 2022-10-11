@@ -387,6 +387,7 @@ namespace Semantica
             int posicionAct = position - 2;
             int lineaAct = linea;
             string name = getContenido();
+            int cambio = 0;
             bool validarFor = Condicion();
             //  b) Metemos un ciclo while despues de validar el For
             do
@@ -398,41 +399,45 @@ namespace Semantica
                 nextToken();
                 validarFor = Condicion();
                 match(";");
-                Incremento(evaluacion && validarFor);
+                cambio = Incremento();
                 match(")");
                 if (getContenido() == "{")
                     Bloque_Instrucciones(evaluacion && validarFor);
                 else
                     Instruccion(evaluacion && validarFor);
+                if (evaluacion && validarFor)
+                    modValor(name, getValor(name) + cambio);
                 //c) Regresar a la posición de lectura del archivo
                 //d) Sacar otro Token
                 //Regreso a la posicion original.
             } while (evaluacion && validarFor);
         }
         // Incremento -> identificador ++ | --
-        private void Incremento(bool evaluacion)
+        private int Incremento()
         {
             if (!existeVariable(getContenido()))
                 throw new Error("\nError de sintaxis en linea " + linea + ". No existe la variable \"" + getContenido() + "\"", Log);
             string variable = getContenido();
+            int cambio = 0;
             match(tipos.Identificador);
             if (getClasificacion() == tipos.IncrementoTermino)
             {
                 if (getContenido()[0] == '+')
                 {
-                    match("++");
-                    if (evaluacion)
-                        modValor(variable, getValor(variable) + 1);
+                    match("++"); cambio = 1;
+                    //if (evaluacion)
+                    //    modValor(variable, getValor(variable) + 1);
                 }
                 else
                 {
-                    match("--");
-                    if (evaluacion)
-                        modValor(variable, getValor(variable) - 1);
+                    match("--"); cambio = -1;
+                    //if (evaluacion)
+                    //    modValor(variable, getValor(variable) - 1);
                 }
             }
             else
                 match(tipos.IncrementoTermino);
+            return cambio;
         }
         private void Incremento(string variable, bool evaluacion)
         {

@@ -1,6 +1,4 @@
-/*
-    Morales Almeida David
-*/
+//Morales Almeida David
 #include <iostream>
 #include <stdio.h>
 #include <conio.h>
@@ -20,7 +18,6 @@ void main()
     if (altura > 2)
         for (i = altura; i > 0; i--)
         {
-
             for (j = 0; j < altura - i; j++)
             {
                 if (j != 2)
