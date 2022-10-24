@@ -7,6 +7,7 @@ namespace Semantica
     {
         protected StreamReader archivo;
         protected StreamWriter Log;
+        protected StreamWriter asm;
         const int F = -1;
         const int E = -2;
         protected int linea;
@@ -63,9 +64,13 @@ namespace Semantica
             linea = 1;
             Log = new StreamWriter("/Users/davidmoralm/Documents/Semantica/Prueba.log");
             Log.AutoFlush = true;
+            asm = new StreamWriter("/Users/davidmoralm/Documents/Semantica/Prueba.asm");
+            asm.AutoFlush = true;
             //Log.WriteLine("Primer constructor");
             Log.WriteLine("Archivo: prueba.cpp");
             Log.WriteLine("Compilado: " + DateTime.Now.ToString("El dd/MM/yyyy a la\'s\' HH:mm:ss"));
+            asm.WriteLine("; Archivo: prueba.cpp");
+            asm.WriteLine("; Compilado: " + DateTime.Now.ToString("El dd/MM/yyyy a la\'s\' HH:mm:ss"));
             //Investigar como checar si existe un archivo o no.
             if (File.Exists(@"/Users/davidmoralm/Documents/Semantica/Prueba.cpp"))
             {
@@ -81,12 +86,16 @@ namespace Semantica
             position = 0;
             linea = 1;
             Log = new StreamWriter(Path.ChangeExtension(nombre, ".log"));
+            asm = new StreamWriter(Path.ChangeExtension(nombre, ".asm"));
             //Usar el objeto Path
             //Path.HasExtension(path1);
             Log.AutoFlush = true;
+            asm.AutoFlush = true;
             //Log.WriteLine("Segundo constructor");
             Log.WriteLine("Archivo: " + nombre);
             Log.WriteLine("Compilado: " + DateTime.Now.ToString("El dd/MM/yyyy a la\'s\' HH:mm:ss"));
+            asm.WriteLine("; Archivo: " + nombre);
+            asm.WriteLine("; Compilado: " + DateTime.Now.ToString("El dd/MM/yyyy a la\'s\' HH:mm:ss"));
             //Investigar como checar si existe un archivo o no.
             if (File.Exists(nombre))
             {
@@ -101,6 +110,7 @@ namespace Semantica
         {
             archivo.Close();
             Log.Close();
+            asm.Close();
         }
         private void clasifica(int estado)
         {

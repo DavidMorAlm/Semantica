@@ -1,15 +1,27 @@
 /*
     Morales Almeida David
 */
-//Requerimiento 1: Actualizar el dominante para variables en la expresion.
-//                 Ejemplo : float x; char y; y = x;
-//Requerimiento 2: Actualizar el dominante para el casteo y el valor de la subexpresion.
-//Requerimiento 3: Programar un metodo de conversion de un valor a un tipo de dato.
-//                 Ejemplo: private float convert(float value, Variable.TipoDato)
-//                 Deberan usar el residuo de la division %255 , %65535
-//Requerimiento 4: Evaluar nuevamente la condicion del if-else, while, for, do while con respecto al parametro que recibe
-//Requerimiento 5: Levantar una Excepcion en el Scanf cuando la captura no sea un numero.
-//Requerimiento 6: Ejecutar el For()
+//Requerimiento 1: Actualización:
+//                 a) Agregar el residuo de la division en el PorFactor
+//                 b) Agregar en instruccion los incrementos de término y los incrementos de Factor
+//                   a++, a--, a += 1, a -= 1, a *= 1, a /= 1, a %= 1
+//                   en donde el 1 puede ser una Expresion
+//                 c) Programar el destructor para ejecutar el metodo close()
+//
+//Requerimiento 2: Actualización:
+//                 a) Marcar errores semánticos cuando los incrementos de término o incrementos de factor superen el rango de la variable
+//                 b) Considerar el inciso b) y c) para el for
+//                 c) Hacer funcionar el do y el While
+//
+//Requerimiento 3: 
+//                 a) Considerar las variables y los casteos de las expresiones matematicas en ensamblador.
+//                 b) Considerar el residuo de la division en ensamblador.
+//
+//Requerimiento 4:
+//
+//Requerimiento 5:
+//
+//Requerimiento 6:
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
@@ -28,6 +40,11 @@ namespace Semantica
         {
 
         }
+        ~Lenguaje()
+        {
+            Console.WriteLine("Destructor");
+            close();
+        }
         private void addVariable(string name, Variable.TipoDato type)
         {
             listaVariables.Add(new Variable(name, type));
@@ -38,6 +55,14 @@ namespace Semantica
             foreach (Variable v in listaVariables)
             {
                 Log.WriteLine(v.getNombre() + " " + v.getTipo() + " " + v.getValue());
+            }
+        }
+        private void variablesAsm()
+        {
+            asm.WriteLine("\n; Variables:\n");
+            foreach (Variable v in listaVariables)
+            {
+                asm.WriteLine("\t" + v.getNombre() + " dw ?");
             }
         }
         private bool existeVariable(string name)
@@ -102,10 +127,16 @@ namespace Semantica
         // Programa -> Librerias? Variables? Main
         public void Programa()
         {
+            asm.WriteLine("#make_COM#");
+            asm.WriteLine("include emu8086.inc");
+            asm.WriteLine("ORG 1000h");
             Librerias();
             Variables();
+            variablesAsm();
             Main();
             displayVariables();
+            asm.WriteLine("RET");
+            asm.WriteLine("END");
         }
         // Librerias -> #include<identificador(.h)?> Librerias?
         private void Librerias()
@@ -239,7 +270,14 @@ namespace Semantica
                 throw new Error("\nError de sintaxis en linea " + linea + ". No existe la variable \"" + getContenido() + "\"", Log);
             string name = getContenido();
             match(tipos.Identificador);
-            if (getContenido() == "=")
+            if (getClasificacion() == tipos.IncrementoTermino || getClasificacion() == tipos.IncrementoFactor)
+            {
+                Incremento(name, evaluacion);
+                match(";");
+                //Requerimiento 1.b
+                //Requetimiento 1.c
+            }
+            else
             {
                 //Log.WriteLine();
                 //Log.Write(name + " = ");
@@ -248,6 +286,7 @@ namespace Semantica
                 Expresion();
                 match(";");
                 float resultado = stackOperandos.Pop();
+                asm.WriteLine("POP AX");
                 //Log.Write("= " + resultado);
                 //Log.WriteLine();
                 //Console.WriteLine(dominante);
@@ -259,17 +298,15 @@ namespace Semantica
                 if (dominante <= getType(name))
                 {
                     if (evaluacion)
+                    {
                         modValor(name, resultado);
+                        asm.WriteLine("MOV " + name + ", AX");
+                    }
                 }
                 else
                 {
                     throw new Error("Error de semantica en la linea " + linea + ". No se puede asignar un <" + dominante + "> a un <" + getType(name) + ">", Log);
                 }
-            }
-            else
-            {
-                Incremento(name, evaluacion);
-                match(";");
             }
         }
         // Printf -> printf (string | Expresion);
@@ -291,6 +328,7 @@ namespace Semantica
             {
                 Expresion();
                 float resultado = stackOperandos.Pop();
+                asm.WriteLine("POP AX");
                 if (evaluacion)
                     Console.Write(resultado);
             }
@@ -312,7 +350,6 @@ namespace Semantica
             if (evaluacion)
             {
                 string value = "" + Console.ReadLine();
-                //Requerimiento 5.
                 try
                 {
                     modValor(name, float.Parse(value));
@@ -330,7 +367,6 @@ namespace Semantica
         {
             match("if");
             match("(");
-            //Requerimiento 4
             bool validarIf = Condicion();
             match(")");
             if (getContenido() == "{")
@@ -340,7 +376,6 @@ namespace Semantica
             if (getContenido() == "else")
             {
                 match("else");
-                //Requerimiento 4.
                 if (getContenido() == "{")
                     Bloque_Instrucciones(!validarIf && evaluacion);
                 else
@@ -352,7 +387,6 @@ namespace Semantica
         {
             match("while");
             match("(");
-            //Requerimiento 4.
             bool validarWhile = Condicion();
             match(")");
             if (getContenido() == "{")
@@ -370,7 +404,6 @@ namespace Semantica
                 Instruccion(evaluacion);
             match("while");
             match("(");
-            //Requerimiento 4.
             bool validarDo = Condicion();
             match(")");
             match(";");
@@ -381,15 +414,11 @@ namespace Semantica
             match("for");
             match("(");
             Asignacion(evaluacion);
-            //Requerimiento 4.
-            //Requerimiento 6:
-            //  a) Necesito guardar la posición de lectura en el archivo de texto.
             int posicionAct = position - 2;
             int lineaAct = linea;
             string name = getContenido();
             int cambio = 0;
             bool validarFor = Condicion();
-            //  b) Metemos un ciclo while despues de validar el For
             do
             {
                 archivo.DiscardBufferedData();
@@ -407,9 +436,7 @@ namespace Semantica
                     Instruccion(evaluacion && validarFor);
                 if (evaluacion && validarFor)
                     modValor(name, getValor(name) + cambio);
-                //c) Regresar a la posición de lectura del archivo
-                //d) Sacar otro Token
-                //Regreso a la posicion original.
+                // Requerimiento 1.d:
             } while (evaluacion && validarFor);
         }
         // Incremento -> identificador ++ | --
@@ -466,6 +493,7 @@ namespace Semantica
             match("(");
             Expresion();
             stackOperandos.Pop();
+            asm.WriteLine("POP AX");
             match(")");
             match("{");
             Lista_Casos(evaluacion);
@@ -493,6 +521,7 @@ namespace Semantica
                 match("case");
                 Expresion();
                 stackOperandos.Pop();
+                asm.WriteLine("POP AX");
                 match(":");
                 if (getContenido() != "case" && getContenido() != "{")
                     Lista_Instrucciones_Case(evaluacion);
@@ -521,7 +550,9 @@ namespace Semantica
             match(tipos.OperadorRelacional);
             Expresion();
             float e2 = stackOperandos.Pop();
+            asm.WriteLine("POP AX");
             float e1 = stackOperandos.Pop();
+            asm.WriteLine("POP BX");
             switch (operador)
             {
                 case "==":
@@ -554,14 +585,20 @@ namespace Semantica
                 Termino();
                 // Log.Write(operador + " ");
                 float n1 = stackOperandos.Pop();
+                asm.WriteLine("POP BX");
                 float n2 = stackOperandos.Pop();
+                asm.WriteLine("POP AX");
                 switch (operador)
                 {
                     case "+":
                         stackOperandos.Push(n2 + n1);
+                        asm.WriteLine("ADD AX, BX");
+                        asm.WriteLine("PUSH AX");
                         break;
                     case "-":
                         stackOperandos.Push(n2 - n1);
+                        asm.WriteLine("SUB AX, BX");
+                        asm.WriteLine("PUSH AX");
                         break;
                 }
             }
@@ -582,14 +619,21 @@ namespace Semantica
                 Factor();
                 //Log.Write(operador + " ");
                 float n1 = stackOperandos.Pop();
+                asm.WriteLine("POP BX");
                 float n2 = stackOperandos.Pop();
+                asm.WriteLine("POP AX");
+                // Requerimiento 1.a
                 switch (operador)
                 {
                     case "*":
                         stackOperandos.Push(n2 * n1);
+                        asm.WriteLine("MUL BX");
+                        asm.WriteLine("PUSH AX");
                         break;
                     case "/":
                         stackOperandos.Push(n2 / n1);
+                        asm.WriteLine("DIV BX");
+                        asm.WriteLine("PUSH AX");
                         break;
                 }
             }
@@ -605,13 +649,14 @@ namespace Semantica
                 }
                 //Log.Write(getContenido() + " ");
                 stackOperandos.Push(float.Parse(getContenido()));
+                asm.WriteLine("MOV AX, " + getContenido());
+                asm.WriteLine("PUSH AX");
                 match(tipos.Numero);
             }
             else if (getClasificacion() == tipos.Identificador)
             {
                 if (!existeVariable(getContenido()))
                     throw new Error("\nError de sintaxis en linea " + linea + ". No existe la variable \"" + getContenido() + "\"", Log);
-                //Requerimiento 1.
                 if (dominante < getType(getContenido()))
                 {
                     dominante = getType(getContenido());
@@ -648,15 +693,10 @@ namespace Semantica
                 match(")");
                 if (huboCast)
                 {
-                    //Requerimiento 2.
-                    //Saco elemento del stackOperandos
-                    //Convierto ese valor al equivalente en casteo
                     dominante = cast;
                     float value = convert(stackOperandos.Pop(), cast);
+                    asm.WriteLine("POP AX");
                     stackOperandos.Push(value);
-                    //Requerimiento 3.
-                    //  Ejemplo: Si el casteo es: (char) y el pop regresa un 256, 
-                    //  el valor equivalente en casteo es el cero.
                 }
             }
         }
