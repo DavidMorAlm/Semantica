@@ -13,7 +13,7 @@
 //                 b) Considerar el inciso b) y c) para el for
 //                 c) Hacer funcionar el do y el While
 //
-//Requerimiento 3: 
+//Requerimiento 3: Actualización:
 //                 a) Considerar las variables y los casteos de las expresiones matematicas en ensamblador.
 //                 b) Considerar el residuo de la division en ensamblador.
 //
@@ -32,13 +32,14 @@ namespace Semantica
         List<Variable> listaVariables = new List<Variable>();
         Stack<float> stackOperandos = new Stack<float>();
         Variable.TipoDato dominante;
+        int cIf;
         public Lenguaje()
         {
-
+            cIf = 0;
         }
         public Lenguaje(string nombre) : base(nombre)
         {
-
+            cIf = 0;
         }
         ~Lenguaje()
         {
@@ -136,7 +137,7 @@ namespace Semantica
             Main();
             displayVariables();
             asm.WriteLine("RET");
-            asm.WriteLine("END");
+            // asm.WriteLine("END");
         }
         // Librerias -> #include<identificador(.h)?> Librerias?
         private void Librerias()
@@ -365,6 +366,7 @@ namespace Semantica
         // If -> if (Condicion) Bloque_Instrucciones (else Bloque_Instrucciones)?
         private void If(bool evaluacion)
         {
+            string etiquetaIf = "if" + ++cIf;
             match("if");
             match("(");
             bool validarIf = Condicion();
@@ -381,6 +383,7 @@ namespace Semantica
                 else
                     Instruccion(!validarIf && evaluacion);
             }
+            asm.WriteLine(etiquetaIf + ":");
         }
         // While -> while(Condicion) Bloque_Instrucciones | Instruccion
         private void While(bool evaluacion)

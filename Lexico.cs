@@ -62,9 +62,9 @@ namespace Semantica
         {
             position = 0;
             linea = 1;
-            Log = new StreamWriter("/Users/davidmoralm/Documents/Semantica/Prueba.log");
+            Log = new StreamWriter("Prueba.log");
             Log.AutoFlush = true;
-            asm = new StreamWriter("/Users/davidmoralm/Documents/Semantica/Prueba.asm");
+            asm = new StreamWriter("Prueba.asm");
             asm.AutoFlush = true;
             //Log.WriteLine("Primer constructor");
             Log.WriteLine("Archivo: prueba.cpp");
@@ -72,9 +72,9 @@ namespace Semantica
             asm.WriteLine("; Archivo: prueba.cpp");
             asm.WriteLine("; Compilado: " + DateTime.Now.ToString("El dd/MM/yyyy a la\'s\' HH:mm:ss"));
             //Investigar como checar si existe un archivo o no.
-            if (File.Exists(@"/Users/davidmoralm/Documents/Semantica/Prueba.cpp"))
+            if (File.Exists("Prueba.cpp"))
             {
-                archivo = new StreamReader("/Users/davidmoralm/Documents/Semantica/Prueba.cpp");
+                archivo = new StreamReader("Prueba.cpp");
             }
             else
             {
