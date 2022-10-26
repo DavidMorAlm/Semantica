@@ -1,5 +1,5 @@
 ; Archivo: prueba.cpp
-; Compilado: El 24/10/2022 a las 09:55:58
+; Compilado: El 25/10/2022 a las 19:21:39
 #make_COM#
 include emu8086.inc
 ORG 1000h
@@ -17,27 +17,21 @@ ORG 1000h
 	y dw ?
 	i dw ?
 	j dw ?
-MOV AX, 71
+MOV AX, 61
 PUSH AX
 POP AX
 MOV y, AX
-MOV AX, 71
+MOV AX, 60
 PUSH AX
-POP AX
+MOV AX, 61
+PUSH AX
 POP BX
-MOV AX, 0
+POP AX
+CMP AX, BX
+JNE if1
+MOV AX, 10
 PUSH AX
 POP AX
 MOV x, AX
 if1:
-MOV AX, 1
-PUSH AX
-MOV AX, 5
-PUSH AX
-POP AX
-POP BX
-MOV AX, 0
-PUSH AX
-POP AX
-if2:
 RET

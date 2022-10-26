@@ -1,5 +1,5 @@
 Archivo: prueba.cpp
-Compilado: El 24/10/2022 a las 09:55:58
+Compilado: El 25/10/2022 a las 19:21:38
 
 
 Variables: 
@@ -11,6 +11,6 @@ a Int 0
 d Int 0
 altura Int 0
 x Float 0
-y Char 71
+y Char 61
 i Int 0
 j Int 0

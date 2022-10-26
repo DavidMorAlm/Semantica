@@ -301,13 +301,13 @@ namespace Semantica
                     if (evaluacion)
                     {
                         modValor(name, resultado);
-                        asm.WriteLine("MOV " + name + ", AX");
                     }
                 }
                 else
                 {
                     throw new Error("Error de semantica en la linea " + linea + ". No se puede asignar un <" + dominante + "> a un <" + getType(name) + ">", Log);
                 }
+                asm.WriteLine("MOV " + name + ", AX");
             }
         }
         // Printf -> printf (string | Expresion);
@@ -369,7 +369,7 @@ namespace Semantica
             string etiquetaIf = "if" + ++cIf;
             match("if");
             match("(");
-            bool validarIf = Condicion();
+            bool validarIf = Condicion(etiquetaIf);
             match(")");
             if (getContenido() == "{")
                 Bloque_Instrucciones(validarIf && evaluacion);
@@ -390,7 +390,7 @@ namespace Semantica
         {
             match("while");
             match("(");
-            bool validarWhile = Condicion();
+            bool validarWhile = Condicion("");
             match(")");
             if (getContenido() == "{")
                 Bloque_Instrucciones(evaluacion && validarWhile);
@@ -407,7 +407,7 @@ namespace Semantica
                 Instruccion(evaluacion);
             match("while");
             match("(");
-            bool validarDo = Condicion();
+            bool validarDo = Condicion("");
             match(")");
             match(";");
         }
@@ -421,7 +421,7 @@ namespace Semantica
             int lineaAct = linea;
             string name = getContenido();
             int cambio = 0;
-            bool validarFor = Condicion();
+            bool validarFor = Condicion("");
             do
             {
                 archivo.DiscardBufferedData();
@@ -429,7 +429,7 @@ namespace Semantica
                 position = posicionAct;
                 linea = lineaAct;
                 nextToken();
-                validarFor = Condicion();
+                validarFor = Condicion("");
                 match(";");
                 cambio = Incremento();
                 match(")");
@@ -546,29 +546,36 @@ namespace Semantica
                 Lista_Instrucciones_Case(evaluacion);
         }
         // Condicion -> Expresion operadorRelacional Expresion
-        private bool Condicion()
+        private bool Condicion(string etiquetaIf)
         {
             Expresion();
             string operador = getContenido();
             match(tipos.OperadorRelacional);
             Expresion();
             float e2 = stackOperandos.Pop();
-            asm.WriteLine("POP AX");
-            float e1 = stackOperandos.Pop();
             asm.WriteLine("POP BX");
+            float e1 = stackOperandos.Pop();
+            asm.WriteLine("POP AX");
+            asm.WriteLine("CMP AX, BX");
             switch (operador)
             {
                 case "==":
+                    asm.WriteLine("JNE " + etiquetaIf);
                     return e1 == e2;
                 case ">":
+                    asm.WriteLine("JLE " + etiquetaIf);
                     return e1 > e2;
                 case ">=":
+                    asm.WriteLine("JL " + etiquetaIf);
                     return e1 >= e2;
                 case "<":
+                    asm.WriteLine("JGE " + etiquetaIf);
                     return e1 < e2;
                 case "<=":
+                    asm.WriteLine("JG " + etiquetaIf);
                     return e1 <= e2;
                 default:
+                    asm.WriteLine("JE " + etiquetaIf);
                     return e1 != e2;
             }
         }
@@ -666,6 +673,7 @@ namespace Semantica
                 }
                 //Log.Write(getContenido() + " ");
                 stackOperandos.Push(getValor(getContenido()));
+                // Requerimiento 3.a
                 match(tipos.Identificador);
             }
             else
@@ -701,6 +709,7 @@ namespace Semantica
                     asm.WriteLine("POP AX");
                     stackOperandos.Push(value);
                 }
+                // Requerimiento 3.a
             }
         }
     }

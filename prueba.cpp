@@ -11,9 +11,7 @@ int j;
 // Este programa calcula el volumen de un cilindro.
 void main()
 {
-    y = 71;
-    if (y == 71)
-        x = 0;
-        if (1 == 5)
-            x = 0;
+    y = 61;
+    if (60 == 61)
+        x = 10;
 }
