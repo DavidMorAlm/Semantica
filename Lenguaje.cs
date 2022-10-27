@@ -9,19 +9,23 @@
 //                 c) Programar el destructor para ejecutar el metodo close()
 //
 //Requerimiento 2: Actualización:
-//                 a) Marcar errores semánticos cuando los incrementos de término o incrementos de factor superen el rango de la variable
-//                 b) Considerar el inciso b) y c) para el for
-//                 c) Hacer funcionar el do y el While
+//                 a) Marcar errores semánticos cuando los incrementos de término o incrementos de factor superen el rango de la variable.
+//                 b) Considerar el inciso b) y c) para el for.
+//                 c) Hacer funcionar el do y el While.
 //
 //Requerimiento 3: Actualización:
 //                 a) Considerar las variables y los casteos de las expresiones matematicas en ensamblador.
 //                 b) Considerar el residuo de la division en ensamblador.
+//                 c) Programar el Print y el Scanf en ensamblador.
 //
-//Requerimiento 4:
+//Requerimiento 4: Actualización:
+//                 a) Programar el else en ensamblador.
+//                 b) Programar el for en ensamblador.
 //
-//Requerimiento 5:
-//
-//Requerimiento 6:
+//Requerimiento 5: Actualización:
+//                 a) Programar el while en ensamblador.
+//                 b) Programar el do en ensamblador.
+
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
@@ -32,14 +36,14 @@ namespace Semantica
         List<Variable> listaVariables = new List<Variable>();
         Stack<float> stackOperandos = new Stack<float>();
         Variable.TipoDato dominante;
-        int cIf;
+        int cIf, cFor;
         public Lenguaje()
         {
-            cIf = 0;
+            cIf = cFor = 0;
         }
         public Lenguaje(string nombre) : base(nombre)
         {
-            cIf = 0;
+            cIf = cFor = 0;
         }
         ~Lenguaje()
         {
@@ -414,12 +418,15 @@ namespace Semantica
         // For -> for (Asignacion Condición ; Incremento) Bloque_Instrucciones | Instruccion
         private void For(bool evaluacion)
         {
+            string inicioFor = "for" + cFor;
+            string finFor = "endfor" + cFor++;
+            asm.WriteLine(inicioFor + ":");
             match("for");
             match("(");
             Asignacion(evaluacion);
-            int posicionAct = position - 2;
+            int posicionAct = position - 1;
             int lineaAct = linea;
-            string name = getContenido();
+            string name;
             int cambio = 0;
             bool validarFor = Condicion("");
             do
@@ -431,6 +438,7 @@ namespace Semantica
                 nextToken();
                 validarFor = Condicion("");
                 match(";");
+                name = getContenido();
                 cambio = Incremento();
                 match(")");
                 if (getContenido() == "{")
@@ -441,13 +449,14 @@ namespace Semantica
                     modValor(name, getValor(name) + cambio);
                 // Requerimiento 1.d:
             } while (evaluacion && validarFor);
+            asm.WriteLine(finFor + ":");
         }
         // Incremento -> identificador ++ | --
         private int Incremento()
         {
-            if (!existeVariable(getContenido()))
-                throw new Error("\nError de sintaxis en linea " + linea + ". No existe la variable \"" + getContenido() + "\"", Log);
-            string variable = getContenido();
+            //if (!existeVariable(getContenido()))
+            //    throw new Error("\nError de sintaxis en linea " + linea + ". No existe la variable \"" + getContenido() + "\"", Log);
+            //string variable = getContenido();
             int cambio = 0;
             match(tipos.Identificador);
             if (getClasificacion() == tipos.IncrementoTermino)
