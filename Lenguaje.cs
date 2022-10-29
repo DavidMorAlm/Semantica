@@ -141,6 +141,7 @@ namespace Semantica
             Main();
             displayVariables();
             asm.WriteLine("RET");
+            asm.WriteLine("DEFINE_SCAN_NUM");
             // asm.WriteLine("END");
         }
         // Librerias -> #include<identificador(.h)?> Librerias?
@@ -321,12 +322,13 @@ namespace Semantica
             match("(");
             if (getClasificacion() == tipos.Cadena)
             {
+                string contenido = getContenido();
                 if (evaluacion)
                 {
-                    string contenido = getContenido();
                     contenido = Regex.Unescape(contenido.Remove(0, 1).Remove(contenido.Length - 2));
                     Console.Write(contenido);
                 }
+                asm.WriteLine("PRINTN \"" + contenido + "\"");
                 match(tipos.Cadena);
             }
             else
@@ -335,7 +337,10 @@ namespace Semantica
                 float resultado = stackOperandos.Pop();
                 asm.WriteLine("POP AX");
                 if (evaluacion)
+                {
+                    // Codigo ensamblador para imprimir una variable
                     Console.Write(resultado);
+                }
             }
             match(")");
             match(";");
@@ -366,6 +371,8 @@ namespace Semantica
             }
             match(")");
             match(";");
+            asm.WriteLine("CALL SCAN_NUM");
+            asm.WriteLine("MOV " + name + ", CX");
         }
         // If -> if (Condicion) Bloque_Instrucciones (else Bloque_Instrucciones)?
         private void If(bool evaluacion)
@@ -653,6 +660,11 @@ namespace Semantica
                         stackOperandos.Push(n2 / n1);
                         asm.WriteLine("DIV BX");
                         asm.WriteLine("PUSH AX");
+                        break;
+                    case "%":
+                        stackOperandos.Push(n2 % n1);
+                        asm.WriteLine("DIV BX");
+                        asm.WriteLine("PUSH DX");
                         break;
                 }
             }

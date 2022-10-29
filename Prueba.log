@@ -1,5 +1,5 @@
 Archivo: prueba.cpp
-Compilado: El 26/10/2022 a las 21:48:04
+Compilado: El 29/10/2022 a las 17:36:24
 
 
 Variables: 
@@ -10,9 +10,9 @@ resultado Float 0
 a Int 0
 d Int 0
 altura Int 0
-x Float 1
-y Char 2
-i Int 1
-j Int 1
-k Int 1
-l Int 1
+x Float 300000
+y Char 0
+i Int 0
+j Int 0
+k Int 0
+l Int 0
