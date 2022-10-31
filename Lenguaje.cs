@@ -489,21 +489,64 @@ namespace Semantica
         {
             if (getClasificacion() == tipos.IncrementoTermino)
             {
-                if (getContenido()[0] == '+')
+                if (getContenido() == "++")
                 {
                     match("++");
                     if (evaluacion)
                         modValor(variable, getValor(variable) + 1);
                 }
-                else
+                else if (getContenido() == "+=")
+                {
+                    match("+=");
+                    Expresion();
+                    float resultado = stackOperandos.Pop();
+                    if (evaluacion)
+                        modValor(variable, getValor(variable) + resultado);
+                }
+                else if (getContenido() == "--")
                 {
                     match("--");
                     if (evaluacion)
                         modValor(variable, getValor(variable) - 1);
                 }
+                else
+                {
+                    match("-=");
+                    Expresion();
+                    float resultado = stackOperandos.Pop();
+                    if (evaluacion)
+                        modValor(variable, getValor(variable) - resultado);
+                }
+            }
+            else if (getClasificacion() == tipos.IncrementoFactor)
+            {
+                if (getContenido() == "*=")
+                {
+                    match("*=");
+                    Expresion();
+                    float resultado = stackOperandos.Pop();
+                    if (evaluacion)
+                        modValor(variable, getValor(variable) * resultado);
+                }
+                else if (getContenido() == "/=")
+                {
+                    match("/=");
+                    Expresion();
+                    float resultado = stackOperandos.Pop();
+                    if (evaluacion)
+                        modValor(variable, getValor(variable) / resultado);
+                }
+                else
+                {
+                    match("%=");
+                    Expresion();
+                    float resultado = stackOperandos.Pop();
+                    if (evaluacion)
+                        modValor(variable, getValor(variable) % resultado);
+                }
             }
             else
-                match(tipos.IncrementoTermino);
+                throw new Error("\nError de sintaxis en linea " + linea + ". Se esperaba un " + tipos.IncrementoFactor + " o " + tipos.IncrementoTermino, Log);
         }
         // Switch -> switch (Expresion) { Lista_Casos (default: (Lista_Instrucciones_Case | Bloque_Instrucciones)? (break;)? )? }
         private void Switch(bool evaluacion)

@@ -10,5 +10,7 @@ int i, j, k, l;
 // Este programa calcula el volumen de un cilindro.
 void main()
 {
-    x = 300000;
+    y = 100;
+    y %= 99;
+    printf(y);
 }

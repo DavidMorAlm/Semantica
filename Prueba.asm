@@ -1,5 +1,5 @@
 ; Archivo: prueba.cpp
-; Compilado: El 29/10/2022 a las 17:36:24
+; Compilado: El 31/10/2022 a las 16:45:30
 #make_COM#
 include emu8086.inc
 ORG 1000h
@@ -19,9 +19,10 @@ ORG 1000h
 	j dw ?
 	k dw ?
 	l dw ?
-MOV AX, 300000
+MOV AX, 100
 PUSH AX
 POP AX
-MOV x, AX
+MOV y, AX
+POP AX
 RET
 DEFINE_SCAN_NUM
