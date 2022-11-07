@@ -370,7 +370,7 @@ namespace Semantica
                 }
                 catch (Exception)
                 {
-                    throw new Error("Error de semantica en linea " + linea + ". No se puede asignar \"" + value + "\" a un <" + getType(getContenido()) + ">", Log);
+                    throw new Error("Error de semantica en linea " + linea + ". No se puede asignar \"" + value + "\" a un <" + getType(name) + ">", Log);
                 }
             }
             match(")");
