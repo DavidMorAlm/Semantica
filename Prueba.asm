@@ -1,28 +1,18 @@
 ; Archivo: prueba.cpp
-; Compilado: El 31/10/2022 a las 16:45:30
+; Compilado: El 06/11/2022 a las 22:39:26
 #make_COM#
 include emu8086.inc
 ORG 1000h
-
-; Variables:
-
-	area dw ?
-	radio dw ?
-	pi dw ?
-	resultado dw ?
-	a dw ?
-	d dw ?
-	altura dw ?
-	x dw ?
-	y dw ?
-	i dw ?
-	j dw ?
-	k dw ?
-	l dw ?
-MOV AX, 100
+for0:
+MOV AX, 250
 PUSH AX
 POP AX
 MOV y, AX
+MOV AX, 256
+PUSH AX
+POP BX
 POP AX
-RET
-DEFINE_SCAN_NUM
+CMP AX, BX
+JGE endfor0
+JMP for0
+endfor0:
