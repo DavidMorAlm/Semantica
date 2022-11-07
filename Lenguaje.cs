@@ -36,14 +36,14 @@ namespace Semantica
         List<Variable> listaVariables = new List<Variable>();
         Stack<float> stackOperandos = new Stack<float>();
         Variable.TipoDato dominante;
-        int cIf, cFor, cWhile, cDo;
+        int cIf, cElse, cFor, cWhile, cDo;
         public Lenguaje()
         {
-            cIf = cFor = cWhile = cDo = 0;
+            cIf = cElse = cFor = cWhile = cDo = 0;
         }
         public Lenguaje(string nombre) : base(nombre)
         {
-            cIf = cFor = cWhile = cDo = 0;
+            cIf = cElse = cFor = cWhile = cDo = 0;
         }
         ~Lenguaje()
         {
@@ -325,10 +325,9 @@ namespace Semantica
             match("(");
             if (getClasificacion() == tipos.Cadena)
             {
-                string contenido = getContenido();
+                string contenido = Regex.Unescape(getContenido().Remove(0, 1).Remove(getContenido().Length - 2));
                 if (evaluacion)
                 {
-                    contenido = Regex.Unescape(contenido.Remove(0, 1).Remove(contenido.Length - 2));
                     Console.Write(contenido);
                 }
                 if (!ejecutado)
@@ -386,6 +385,7 @@ namespace Semantica
         private void If(bool evaluacion, bool ejecutado)
         {
             string etiquetaIf = "if" + ++cIf;
+            string etiquetaElse = "else" + ++cElse;
             match("if");
             match("(");
             bool validarIf = Condicion(etiquetaIf, ejecutado);
@@ -396,40 +396,92 @@ namespace Semantica
                 Instruccion(validarIf && evaluacion, ejecutado);
             if (getContenido() == "else")
             {
+                if (!ejecutado)
+                {
+                    asm.WriteLine("JMP " + etiquetaElse);
+                    asm.WriteLine(etiquetaIf + ":");
+                }
                 match("else");
                 if (getContenido() == "{")
                     Bloque_Instrucciones(!validarIf && evaluacion, ejecutado);
                 else
                     Instruccion(!validarIf && evaluacion, ejecutado);
+                if (!ejecutado)
+                    asm.WriteLine(etiquetaElse + ":");
             }
-            if (!ejecutado)
-                asm.WriteLine(etiquetaIf + ":");
+            else
+            {
+                if (!ejecutado)
+                    asm.WriteLine(etiquetaIf + ":");
+            }
         }
         // While -> while(Condicion) Bloque_Instrucciones | Instruccion
         private void While(bool evaluacion, bool ejecutado)
         {
+            string inicioWhile = "while" + cWhile;
+            string finWhile = "finWhile" + cWhile++;
             match("while");
             match("(");
-            bool validarWhile = Condicion("", ejecutado);
-            match(")");
-            if (getContenido() == "{")
-                Bloque_Instrucciones(evaluacion && validarWhile, ejecutado);
-            else
-                Instruccion(evaluacion && validarWhile, ejecutado);
+            int posicionAct = position - 1;
+            int lineaAct = linea;
+            bool validarWhile;
+            if (!ejecutado)
+                asm.WriteLine(inicioWhile + ":");
+            do
+            {
+                archivo.DiscardBufferedData();
+                archivo.BaseStream.Seek(posicionAct, SeekOrigin.Begin);
+                position = posicionAct;
+                linea = lineaAct;
+                nextToken();
+                validarWhile = Condicion(finWhile, ejecutado);
+                match(")");
+                if (getContenido() == "{")
+                    Bloque_Instrucciones(evaluacion && validarWhile, ejecutado);
+                else
+                    Instruccion(evaluacion && validarWhile, ejecutado);
+                if (!ejecutado)
+                {
+                    asm.WriteLine("JMP " + inicioWhile);
+                    asm.WriteLine(finWhile + ":");
+                    ejecutado = true;
+                }
+            } while (evaluacion && validarWhile);
         }
         // Do -> do Bloque_Instrucciones | Instruccion while(Condicion);
         private void Do(bool evaluacion, bool ejecutado)
         {
+            string inicioDo = "do" + cDo;
+            string finDo = "finDo" + cDo++;
             match("do");
-            if (getContenido() == "{")
-                Bloque_Instrucciones(evaluacion, ejecutado);
-            else
-                Instruccion(evaluacion, ejecutado);
-            match("while");
-            match("(");
-            bool validarDo = Condicion("", ejecutado);
-            match(")");
-            match(";");
+            int posicionAct = position - 1;
+            int lineaAct = linea;
+            bool validarDo = true;
+            if (!ejecutado)
+                asm.WriteLine(inicioDo + ":");
+            do
+            {
+                archivo.DiscardBufferedData();
+                archivo.BaseStream.Seek(posicionAct, SeekOrigin.Begin);
+                position = posicionAct;
+                linea = lineaAct;
+                nextToken();
+                if (getContenido() == "{")
+                    Bloque_Instrucciones(evaluacion && validarDo, ejecutado);
+                else
+                    Instruccion(evaluacion && validarDo, ejecutado);
+                match("while");
+                match("(");
+                validarDo = Condicion(finDo, ejecutado);
+                match(")");
+                match(";");
+                if (!ejecutado)
+                {
+                    asm.WriteLine("JMP " + inicioDo);
+                    asm.WriteLine(finDo + ":");
+                    ejecutado = true;
+                }
+            } while (evaluacion && validarDo);
         }
         // For -> for (Asignacion Condición ; Incremento) Bloque_Instrucciones | Instruccion
         private void For(bool evaluacion, bool ejecutado)
