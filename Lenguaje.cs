@@ -31,7 +31,7 @@ using System.Text.RegularExpressions;
 
 namespace Semantica
 {
-    public class Lenguaje : Sintaxis
+    public class Lenguaje : Sintaxis, IDisposable
     {
         List<Variable> listaVariables = new List<Variable>();
         Stack<float> stackOperandos = new Stack<float>();
@@ -45,10 +45,15 @@ namespace Semantica
         {
             cIf = cElse = cFor = cWhile = cDo = 0;
         }
+        public void Dispose()
+        {
+            Console.WriteLine("\nDestructor");
+            close();
+            GC.SuppressFinalize(this);
+        }
         ~Lenguaje()
         {
-            Console.WriteLine("Destructor");
-            close();
+            Dispose();
         }
         private void addVariable(string name, Variable.TipoDato type)
         {

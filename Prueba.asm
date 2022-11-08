@@ -1,5 +1,5 @@
 ; Archivo: prueba.cpp
-; Compilado: El 07/11/2022 a las 09:58:13
+; Compilado: El 07/11/2022 a las 22:06:23
 #make_COM#
 include emu8086.inc
 ORG 1000h

@@ -11,13 +11,13 @@ namespace Semantica
         {
             try
             {
-                Lenguaje a = new Lenguaje();
+                using (Lenguaje a = new Lenguaje())
                 a.Programa();
                 /*while(!a.findArchivo())
                 {
                     a.nextToken();
                 }*/
-                a.close();
+                //a.close();
             }
             catch (Exception e)
             {
