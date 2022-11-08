@@ -151,7 +151,7 @@ namespace Semantica
         {
             asm.WriteLine("#make_COM#");
             asm.WriteLine("include emu8086.inc");
-            asm.WriteLine("ORG 1000h");
+            asm.WriteLine("ORG 100h");
             Librerias();
             Variables();
             Main();
@@ -348,7 +348,17 @@ namespace Semantica
                     Console.Write(contenido);
                 }
                 if (!ejecutado)
-                    asm.WriteLine("PRINTN \"" + contenido + "\"");
+                {
+                    switch (contenido)
+                    {
+                        case "\n":
+                            asm.WriteLine("PRINTN \"\"");
+                            break;
+                        default:
+                            asm.WriteLine("PRINT \"" + contenido + "\"");
+                            break;
+                    }
+                }
                 match(tipos.Cadena);
             }
             else
@@ -356,10 +366,13 @@ namespace Semantica
                 Expresion(ejecutado);
                 float resultado = stackOperandos.Pop();
                 if (!ejecutado)
-                    asm.WriteLine("POP AX");
-                if (evaluacion)
                 {
                     // Codigo ensamblador para imprimir una variable
+                    asm.WriteLine("POP AX");
+                    asm.WriteLine("PRINT AX");
+                }
+                if (evaluacion)
+                {
                     Console.Write(resultado);
                 }
             }
@@ -877,7 +890,10 @@ namespace Semantica
                     dominante = cast;
                     float value = convert(stackOperandos.Pop(), cast);
                     if (!ejecutado)
+                    {
                         asm.WriteLine("POP AX");
+                        asm.WriteLine("PUSH " + value);
+                    }
                     stackOperandos.Push(value);
                 }
                 // Requerimiento 3.a

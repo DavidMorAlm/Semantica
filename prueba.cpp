@@ -19,7 +19,7 @@ void main()
         {
             if (j == 2)
             {
-                printf("-");
+                printf(j);
             }
             else
             {

@@ -1,8 +1,8 @@
 ; Archivo: prueba.cpp
-; Compilado: El 07/11/2022 a las 22:06:23
+; Compilado: El 07/11/2022 a las 23:50:54
 #make_COM#
 include emu8086.inc
-ORG 1000h
+ORG 100h
 MOV AX, 10
 PUSH AX
 POP AX
@@ -25,10 +25,13 @@ POP BX
 POP AX
 CMP AX, BX
 JNE if1
-PRINTN "-"
+MOV AX, j
+PUSH AX
+POP AX
+PRINT AX
 JMP else1
 if1:
-PRINTN "*"
+PRINT "*"
 else1:
 MOV AX, j
 PUSH AX
@@ -46,8 +49,7 @@ CMP AX, BX
 JG finDo1
 JMP do1
 finDo1:
-PRINTN "
-"
+PRINTN ""
 MOV AX, i
 PUSH AX
 MOV AX, 0
