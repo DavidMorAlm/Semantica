@@ -67,7 +67,19 @@ namespace Semantica
             asm.WriteLine("\n; Variables:");
             foreach (Variable v in listaVariables)
             {
-                asm.WriteLine("\t" + v.getNombre() + " dw ?");
+                asm.Write("\t" + v.getNombre());
+                switch (v.getTipo())
+                {
+                    case Variable.TipoDato.Char:
+                        asm.WriteLine(" db ?");
+                        break;
+                    case Variable.TipoDato.Int:
+                        asm.WriteLine(" dw ?");
+                        break;
+                    default:
+                        asm.WriteLine(" dd ?");
+                        break;
+                }
             }
         }
         private bool existeVariable(string name)
@@ -822,6 +834,11 @@ namespace Semantica
                 //Log.Write(getContenido() + " ");
                 stackOperandos.Push(getValor(getContenido()));
                 // Requerimiento 3.a
+                if (!ejecutado)
+                {
+                    asm.WriteLine("MOV AX, " + getContenido());
+                    asm.WriteLine("PUSH AX");
+                }
                 match(tipos.Identificador);
             }
             else
