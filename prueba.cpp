@@ -33,9 +33,8 @@ void main(){
             k += 2; 
         } while(k < altura*2);
         printf("\n"); 
-    }else{
+    }else
         printf("\nError: la altura debe de ser mayor que 2\n");
-    }
     if(1 != 1){
         printf("Esto no se debe imprimir");
         if(2 == 2){

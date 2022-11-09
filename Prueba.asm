@@ -1,9 +1,9 @@
 ; Archivo: prueba.cpp
-; Compilado: El 09/11/2022 a las 07:33:51
+; Compilado: El 09/11/2022 a las 11:09:05
 #make_COM#
 include emu8086.inc
 ORG 100h
-PRINT "Introduce la altura de la piramide: "
+PRINT 'Introduce la altura de la piramide: '
 CALL SCAN_NUM
 MOV altura, CX
 MOV AX, altura
@@ -62,10 +62,10 @@ POP BX
 POP AX
 CMP AX, BX
 JNE if2
-PRINT "*"
+PRINT '*'
 JMP else2
 if2:
-PRINT "-"
+PRINT '-'
 else2:
 MOV AX, 1
 PUSH AX
@@ -73,8 +73,7 @@ POP AX
 ADD j, AX
 JMP while0
 finWhile0:
-PRINT "
-"
+PRINTN ""
 POP AX
 SUB i, AX
 JMP for0
@@ -84,7 +83,7 @@ PUSH AX
 POP AX
 MOV k, AX
 do0:
-PRINT "-"
+PRINT '-'
 MOV AX, 2
 PUSH AX
 POP AX
@@ -105,13 +104,12 @@ CMP AX, BX
 JGE finDo0
 JMP do0
 finDo0:
-PRINT "
-"
+PRINTN ""
 JMP else1
 if1:
-PRINT "
-Error: la altura debe de ser mayor que 2
-"
+PRINTN ""
+PRINT 'Error: la altura debe de ser mayor que 2'
+PRINTN ""
 else1:
 MOV AX, 1
 PUSH AX
@@ -121,7 +119,7 @@ POP BX
 POP AX
 CMP AX, BX
 JE if58
-PRINT "Esto no se debe imprimir"
+PRINT 'Esto no se debe imprimir'
 MOV AX, 2
 PUSH AX
 MOV AX, 2
@@ -130,14 +128,14 @@ POP BX
 POP AX
 CMP AX, BX
 JNE if59
-PRINT "Esto tampoco"
+PRINT 'Esto tampoco'
 if59:
 if58:
 MOV AX, 258
 PUSH AX
 POP AX
 MOV a, AX
-PRINT "Valor de variable int 'a' antes del casteo: "
+PRINT 'Valor de variable int 'a' antes del casteo: '
 MOV AX, a
 PUSH AX
 POP AX
@@ -149,15 +147,15 @@ MOV AH, 0
 PUSH AX
 POP AX
 MOV y, AL
-PRINT "
-Valor de variable char 'y' despues del casteo de a: "
+PRINTN ""
+PRINT 'Valor de variable char 'y' despues del casteo de a: '
 MOV AL, y
 PUSH AX
 POP AX
 CALL PRINT_NUM
-PRINT "
-A continuacion se intenta asignar un int a un char sin usar casteo: 
-"
+PRINTN ""
+PRINT 'A continuacion se intenta asignar un int a un char sin usar casteo: '
+PRINTN ""
 RET
 
 ; Variables:
@@ -175,5 +173,5 @@ RET
 	j dw ?
 	k dw ?
 DEFINE_PRINT_NUM
-DEFINE_SCAN_NUM_UNS
+DEFINE_PRINT_NUM_UNS
 DEFINE_SCAN_NUM
