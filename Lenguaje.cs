@@ -159,7 +159,7 @@ namespace Semantica
             asm.WriteLine("RET");
             variablesAsm();
             asm.WriteLine("DEFINE_PRINT_NUM");
-            asm.WriteLine("DEFINE_SCAN_NUM_UNS");
+            asm.WriteLine("DEFINE_PRINT_NUM_UNS");
             asm.WriteLine("DEFINE_SCAN_NUM");
             // asm.WriteLine("END");
         }
@@ -364,7 +364,33 @@ namespace Semantica
                 }
                 if (!ejecutado)
                 {
-                    asm.WriteLine("PRINT \"" + contenido + "\"");
+                    char c = contenido[0];
+                    string buffer = "";
+                    int i = 0;
+                    while (i < contenido.Length)
+                    {
+                        if (c.Equals('\n'))
+                        {
+                            asm.WriteLine("PRINTN \"\"");
+                            i++;
+                            if (i == contenido.Length)
+                                break;
+                            c = contenido[i];
+                        }
+                        else
+                        {
+                            while ( c != '\n')
+                            {
+                                buffer += c;
+                                i++;
+                                if (i == contenido.Length)
+                                    break;
+                                c = contenido[i];
+                            }
+                            asm.WriteLine("PRINT \'" + buffer + "\'");
+                            buffer = "";
+                        }
+                    }
                 }
                 match(tipos.Cadena);
             }
