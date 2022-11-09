@@ -1,5 +1,5 @@
 Archivo: prueba.cpp
-Compilado: El 07/11/2022 a las 23:50:54
+Compilado: El 08/11/2022 a las 21:09:52
 
 
 Variables: 
@@ -7,13 +7,12 @@ area Float 0
 radio Float 0
 pi Float 0
 resultado Float 0
-a Int 0
+a Int 258
 d Int 0
-altura Int 10
+altura Int 7
+cinco Int 0
 x Float 0
-y Char 0
+y Char 2
 i Int 0
-j Int 10
-k Int 0
-l Int 0
-p Int 0
+j Int 6
+k Int 14

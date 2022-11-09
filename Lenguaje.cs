@@ -526,6 +526,7 @@ namespace Semantica
             int posicionAct = position - 1;
             int lineaAct = linea;
             string name;
+            string incrementoOp;
             float cambio = 0;
             bool validarFor;
             do
@@ -541,6 +542,7 @@ namespace Semantica
                 match(tipos.Identificador);
                 if (!existeVariable(name))
                     throw new Error("\nError de sintaxis en linea " + linea + ". No existe la variable \"" + name + "\"", Log);
+                incrementoOp = getContenido();
                 cambio = Incremento(name, false, ejecutado);
                 if (evaluacion && validarFor)
                 {
@@ -557,11 +559,50 @@ namespace Semantica
                 // Requerimiento 1.d:
                 if (!ejecutado)
                 {
+                    IncrementoAsm(incrementoOp, name);
                     asm.WriteLine("JMP " + inicioFor);
                     asm.WriteLine(finFor + ":");
                     ejecutado = true;
                 }
             } while (evaluacion && validarFor);
+        }
+        private void IncrementoAsm(string incremento, string variable)
+        {
+            switch (incremento)
+            {
+                case "++":
+                    asm.WriteLine("INC " + variable);
+                    break;
+                case "+=":
+                    asm.WriteLine("POP AX");
+                    asm.WriteLine("ADD AX, " + variable);
+                    break;
+                case "--":
+                    asm.WriteLine("DEC " + variable);
+                    break;
+                case "-=":
+                    asm.WriteLine("POP AX");
+                    asm.WriteLine("SUB AX, " + variable);
+                    break;
+                case "*=":
+                    asm.WriteLine("MOV AX, " + variable);
+                    asm.WriteLine("POP BX");
+                    asm.WriteLine("MUL BX");
+                    asm.WriteLine("MOV " + variable + ", DX");
+                    break;
+                case "/=":
+                    asm.WriteLine("MOV AX, " + variable);
+                    asm.WriteLine("POP BX");
+                    asm.WriteLine("DIV BX");
+                    asm.WriteLine("MOV " + variable + ", AX");
+                    break;
+                case "%=":
+                    asm.WriteLine("MOV AX, " + variable);
+                    asm.WriteLine("POP BX");
+                    asm.WriteLine("DIV BX");
+                    asm.WriteLine("MOV " + variable + ", DX");
+                    break;
+            }
         }
         // Incremento -> identificador ++ | --
         private float Incremento(string variable, bool evaluacion, bool ejecutado)
