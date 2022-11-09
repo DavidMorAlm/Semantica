@@ -296,7 +296,7 @@ namespace Semantica
             match(tipos.Identificador);
             if (getClasificacion() == tipos.IncrementoTermino || getClasificacion() == tipos.IncrementoFactor)
             {
-                Incremento(name, evaluacion, ejecutado);
+                Incremento(name, evaluacion, ejecutado, true);
                 match(";");
                 //Requerimiento 1.b
                 //Requetimiento 1.c
@@ -518,8 +518,6 @@ namespace Semantica
         {
             string inicioFor = "for" + cFor;
             string finFor = "endfor" + cFor++;
-            if (!ejecutado)
-                asm.WriteLine(inicioFor + ":");
             match("for");
             match("(");
             Asignacion(evaluacion, ejecutado);
@@ -529,6 +527,8 @@ namespace Semantica
             string incrementoOp;
             float cambio = 0;
             bool validarFor;
+            if (!ejecutado)
+                asm.WriteLine(inicioFor + ":");
             do
             {
                 archivo.DiscardBufferedData();
@@ -543,7 +543,7 @@ namespace Semantica
                 if (!existeVariable(name))
                     throw new Error("\nError de sintaxis en linea " + linea + ". No existe la variable \"" + name + "\"", Log);
                 incrementoOp = getContenido();
-                cambio = Incremento(name, false, ejecutado);
+                cambio = Incremento(name, false, ejecutado, false);
                 if (evaluacion && validarFor)
                 {
                     if (!evaluaSemantica(name, cambio))
@@ -575,20 +575,20 @@ namespace Semantica
                     break;
                 case "+=":
                     asm.WriteLine("POP AX");
-                    asm.WriteLine("ADD AX, " + variable);
+                    asm.WriteLine("ADD " + variable + ", AX");
                     break;
                 case "--":
                     asm.WriteLine("DEC " + variable);
                     break;
                 case "-=":
                     asm.WriteLine("POP AX");
-                    asm.WriteLine("SUB AX, " + variable);
+                    asm.WriteLine("SUB " + variable + ", AX");
                     break;
                 case "*=":
                     asm.WriteLine("MOV AX, " + variable);
                     asm.WriteLine("POP BX");
                     asm.WriteLine("MUL BX");
-                    asm.WriteLine("MOV " + variable + ", DX");
+                    asm.WriteLine("MOV " + variable + ", AX");
                     break;
                 case "/=":
                     asm.WriteLine("MOV AX, " + variable);
@@ -605,7 +605,7 @@ namespace Semantica
             }
         }
         // Incremento -> identificador ++ | --
-        private float Incremento(string variable, bool evaluacion, bool ejecutado)
+        private float Incremento(string variable, bool evaluacion, bool ejecutado, bool imprimir)
         {
             float cambio = 0;
             if (getClasificacion() == tipos.IncrementoTermino)
@@ -614,6 +614,8 @@ namespace Semantica
                 {
                     match("++");
                     cambio = getValor(variable) + 1;
+                    if (imprimir && !ejecutado)
+                        IncrementoAsm("++", variable);
                 }
                 else if (getContenido() == "+=")
                 {
@@ -621,11 +623,15 @@ namespace Semantica
                     Expresion(ejecutado);
                     float resultado = stackOperandos.Pop();
                     cambio = getValor(variable) + resultado;
+                    if (imprimir && !ejecutado)
+                        IncrementoAsm("+=", variable);
                 }
                 else if (getContenido() == "--")
                 {
                     match("--");
                     cambio = getValor(variable) - 1;
+                    if (imprimir && !ejecutado)
+                        IncrementoAsm("--", variable);
                 }
                 else
                 {
@@ -633,6 +639,8 @@ namespace Semantica
                     Expresion(ejecutado);
                     float resultado = stackOperandos.Pop();
                     cambio = getValor(variable) - resultado;
+                    if (imprimir && !ejecutado)
+                        IncrementoAsm("-=", variable);
                 }
             }
             else if (getClasificacion() == tipos.IncrementoFactor)
@@ -643,6 +651,8 @@ namespace Semantica
                     Expresion(ejecutado);
                     float resultado = stackOperandos.Pop();
                     cambio = getValor(variable) * resultado;
+                    if (imprimir && !ejecutado)
+                        IncrementoAsm("*=", variable);
                 }
                 else if (getContenido() == "/=")
                 {
@@ -650,6 +660,8 @@ namespace Semantica
                     Expresion(ejecutado);
                     float resultado = stackOperandos.Pop();
                     cambio = getValor(variable) / resultado;
+                    if (imprimir && !ejecutado)
+                        IncrementoAsm("/=", variable);
                 }
                 else
                 {
@@ -657,6 +669,8 @@ namespace Semantica
                     Expresion(ejecutado);
                     float resultado = stackOperandos.Pop();
                     cambio = getValor(variable) % resultado;
+                    if (imprimir && !ejecutado)
+                        IncrementoAsm("%=", variable);
                 }
             }
             else
