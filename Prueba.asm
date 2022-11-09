@@ -1,5 +1,5 @@
 ; Archivo: prueba.cpp
-; Compilado: El 08/11/2022 a las 21:09:52
+; Compilado: El 09/11/2022 a las 07:33:51
 #make_COM#
 include emu8086.inc
 ORG 100h
@@ -14,11 +14,11 @@ POP BX
 POP AX
 CMP AX, BX
 JLE if1
-for0:
 MOV AX, altura
 PUSH AX
 POP AX
 MOV i, AX
+for0:
 MOV AX, i
 PUSH AX
 MOV AX, 0
@@ -69,11 +69,14 @@ PRINT "-"
 else2:
 MOV AX, 1
 PUSH AX
+POP AX
+ADD j, AX
 JMP while0
 finWhile0:
-PRINTN ""
+PRINT "
+"
 POP AX
-SUB AX, i
+SUB i, AX
 JMP for0
 endfor0:
 MOV AX, 0
@@ -84,6 +87,8 @@ do0:
 PRINT "-"
 MOV AX, 2
 PUSH AX
+POP AX
+ADD k, AX
 MOV AX, k
 PUSH AX
 MOV AX, altura
@@ -100,7 +105,8 @@ CMP AX, BX
 JGE finDo0
 JMP do0
 finDo0:
-PRINTN ""
+PRINT "
+"
 JMP else1
 if1:
 PRINT "
@@ -114,7 +120,7 @@ PUSH AX
 POP BX
 POP AX
 CMP AX, BX
-JE if31
+JE if58
 PRINT "Esto no se debe imprimir"
 MOV AX, 2
 PUSH AX
@@ -123,31 +129,32 @@ PUSH AX
 POP BX
 POP AX
 CMP AX, BX
-JNE if32
+JNE if59
 PRINT "Esto tampoco"
-if32:
-if31:
+if59:
+if58:
 MOV AX, 258
 PUSH AX
 POP AX
 MOV a, AX
-PRINT "Valor de variable int a antes del casteo: "
+PRINT "Valor de variable int 'a' antes del casteo: "
 MOV AX, a
 PUSH AX
 POP AX
-PRINT AX
+CALL PRINT_NUM
 MOV AX, a
 PUSH AX
 POP AX
-PUSH 2
+MOV AH, 0
+PUSH AX
 POP AX
-MOV y, AX
+MOV y, AL
 PRINT "
-Valor de variable char y despues del casteo de a: "
-MOV AX, y
+Valor de variable char 'y' despues del casteo de a: "
+MOV AL, y
 PUSH AX
 POP AX
-PRINT AX
+CALL PRINT_NUM
 PRINT "
 A continuacion se intenta asignar un int a un char sin usar casteo: 
 "
@@ -167,4 +174,6 @@ RET
 	i dw ?
 	j dw ?
 	k dw ?
+DEFINE_PRINT_NUM
+DEFINE_SCAN_NUM_UNS
 DEFINE_SCAN_NUM

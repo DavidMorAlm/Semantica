@@ -34,9 +34,7 @@ void main(){
         } while(k < altura*2);
         printf("\n"); 
     }else{
-        printf("\n");
-        printf("Error: la altura debe de ser mayor que 2");
-        printf("\n");
+        printf("\nError: la altura debe de ser mayor que 2\n");
     }
     if(1 != 1){
         printf("Esto no se debe imprimir");
@@ -45,14 +43,11 @@ void main(){
         }
     }
     a = 258;
-    printf("Valor de variable int a antes del casteo: ");
-    //printf(a);
+    printf("Valor de variable int 'a' antes del casteo: ");
+    printf(a);
     y = (char)(a);  //Requerimiento 2 y 3, actualiza el dominante y convierte el valor con una funcion
-    printf("\n");
-    printf("Valor de variable char y despues del casteo de a: ");
-    //printf(y);
-    printf("\n");
-    printf("A continuacion se intenta asignar un int a un char sin usar casteo: ");
-    printf("\n");
+    printf("\nValor de variable char 'y' despues del casteo de a: ");
+    printf(y);
+    printf("\nA continuacion se intenta asignar un int a un char sin usar casteo: \n");
     //y = a; //Requerimiento 1.- debe marcar error 
 }

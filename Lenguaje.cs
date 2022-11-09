@@ -158,6 +158,8 @@ namespace Semantica
             displayVariables();
             asm.WriteLine("RET");
             variablesAsm();
+            asm.WriteLine("DEFINE_PRINT_NUM");
+            asm.WriteLine("DEFINE_SCAN_NUM_UNS");
             asm.WriteLine("DEFINE_SCAN_NUM");
             // asm.WriteLine("END");
         }
@@ -362,15 +364,7 @@ namespace Semantica
                 }
                 if (!ejecutado)
                 {
-                    switch (contenido)
-                    {
-                        case "\n":
-                            asm.WriteLine("PRINTN \"\"");
-                            break;
-                        default:
-                            asm.WriteLine("PRINT \"" + contenido + "\"");
-                            break;
-                    }
+                    asm.WriteLine("PRINT \"" + contenido + "\"");
                 }
                 match(tipos.Cadena);
             }
@@ -382,7 +376,7 @@ namespace Semantica
                 {
                     // Codigo ensamblador para imprimir una variable
                     asm.WriteLine("POP AX");
-                    asm.WriteLine("PRINT AX");
+                    asm.WriteLine("CALL PRINT_NUM");
                 }
                 if (evaluacion)
                 {
@@ -979,6 +973,7 @@ namespace Semantica
                                 asm.WriteLine("PUSH AX");
                                 break;
                             case Variable.TipoDato.Int:
+                            case Variable.TipoDato.Float:
                                 asm.WriteLine("PUSH AX");
                                 break;
                         }
