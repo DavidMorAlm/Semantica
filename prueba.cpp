@@ -46,11 +46,11 @@ void main(){
     }
     a = 258;
     printf("Valor de variable int a antes del casteo: ");
-    printf(a);
+    //printf(a);
     y = (char)(a);  //Requerimiento 2 y 3, actualiza el dominante y convierte el valor con una funcion
     printf("\n");
     printf("Valor de variable char y despues del casteo de a: ");
-    printf(y);
+    //printf(y);
     printf("\n");
     printf("A continuacion se intenta asignar un int a un char sin usar casteo: ");
     printf("\n");

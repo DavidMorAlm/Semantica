@@ -332,7 +332,20 @@ namespace Semantica
                     throw new Error("Error de semantica en la linea " + linea + ". No se puede asignar un <" + dominante + "> a un <" + getType(name) + ">", Log);
                 }
                 if (!ejecutado)
-                    asm.WriteLine("MOV " + name + ", AX");
+                {
+                    switch (getType(name))
+                    {
+                        case Variable.TipoDato.Char:
+                            asm.WriteLine("MOV " + name + ", AL");
+                            break;
+                        case Variable.TipoDato.Int:
+                            asm.WriteLine("MOV " + name + ", AX");
+                            break;
+                        default:
+                            asm.WriteLine("MOV " + name + ", AX");
+                            break;
+                    }
+                }
             }
         }
         // Printf -> printf (string | Expresion);
@@ -898,18 +911,30 @@ namespace Semantica
             }
             else if (getClasificacion() == tipos.Identificador)
             {
-                if (!existeVariable(getContenido()))
-                    throw new Error("\nError de sintaxis en linea " + linea + ". No existe la variable \"" + getContenido() + "\"", Log);
-                if (dominante < getType(getContenido()))
+                string name = getContenido();
+                if (!existeVariable(name))
+                    throw new Error("\nError de sintaxis en linea " + linea + ". No existe la variable \"" + name + "\"", Log);
+                if (dominante < getType(name))
                 {
-                    dominante = getType(getContenido());
+                    dominante = getType(name);
                 }
                 //Log.Write(getContenido() + " ");
-                stackOperandos.Push(getValor(getContenido()));
+                stackOperandos.Push(getValor(name));
                 // Requerimiento 3.a
                 if (!ejecutado)
                 {
-                    asm.WriteLine("MOV AX, " + getContenido());
+                    switch (getType(name))
+                    {
+                        case Variable.TipoDato.Char:
+                            asm.WriteLine("MOV AL, " + name);
+                            break;
+                        case Variable.TipoDato.Int:
+                            asm.WriteLine("MOV AX, " + name);
+                            break;
+                        default:
+                            asm.WriteLine("MOV AX, " + name);
+                            break;
+                    }
                     asm.WriteLine("PUSH AX");
                 }
                 match(tipos.Identificador);
@@ -947,7 +972,16 @@ namespace Semantica
                     if (!ejecutado)
                     {
                         asm.WriteLine("POP AX");
-                        asm.WriteLine("PUSH " + value);
+                        switch (cast)
+                        {
+                            case Variable.TipoDato.Char:
+                                asm.WriteLine("MOV AH, 0");
+                                asm.WriteLine("PUSH AX");
+                                break;
+                            case Variable.TipoDato.Int:
+                                asm.WriteLine("PUSH AX");
+                                break;
+                        }
                     }
                     stackOperandos.Push(value);
                 }
