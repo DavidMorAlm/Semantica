@@ -1,5 +1,5 @@
 ; Archivo: prueba.cpp
-; Compilado: El 09/11/2022 a las 11:09:05
+; Compilado: El 09/11/2022 a las 22:59:10
 #make_COM#
 include emu8086.inc
 ORG 100h
@@ -13,7 +13,7 @@ PUSH AX
 POP BX
 POP AX
 CMP AX, BX
-JLE if1
+JLE if0
 MOV AX, altura
 PUSH AX
 POP AX
@@ -61,12 +61,12 @@ PUSH AX
 POP BX
 POP AX
 CMP AX, BX
-JNE if2
+JNE if1
 PRINT '*'
-JMP else2
-if2:
+JMP else1
+if1:
 PRINT '-'
-else2:
+else1:
 MOV AX, 1
 PUSH AX
 POP AX
@@ -105,12 +105,12 @@ JGE finDo0
 JMP do0
 finDo0:
 PRINTN ""
-JMP else1
-if1:
+JMP else0
+if0:
 PRINTN ""
 PRINT 'Error: la altura debe de ser mayor que 2'
 PRINTN ""
-else1:
+else0:
 MOV AX, 1
 PUSH AX
 MOV AX, 1
@@ -118,7 +118,7 @@ PUSH AX
 POP BX
 POP AX
 CMP AX, BX
-JE if58
+JE if2
 PRINT 'Esto no se debe imprimir'
 MOV AX, 2
 PUSH AX
@@ -127,10 +127,10 @@ PUSH AX
 POP BX
 POP AX
 CMP AX, BX
-JNE if59
+JNE if3
 PRINT 'Esto tampoco'
-if59:
-if58:
+if3:
+if2:
 MOV AX, 258
 PUSH AX
 POP AX

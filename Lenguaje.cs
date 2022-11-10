@@ -447,8 +447,12 @@ namespace Semantica
         // If -> if (Condicion) Bloque_Instrucciones (else Bloque_Instrucciones)?
         private void If(bool evaluacion, bool ejecutado)
         {
-            string etiquetaIf = "if" + ++cIf;
-            string etiquetaElse = "else" + ++cElse;
+            string etiquetaIf = "if" + cIf;
+            string etiquetaElse = "else" + cElse;
+            if (!ejecutado)
+            {
+                cIf++; cElse++;
+            }
             match("if");
             match("(");
             bool validarIf = Condicion(etiquetaIf, ejecutado);
@@ -482,7 +486,9 @@ namespace Semantica
         private void While(bool evaluacion, bool ejecutado)
         {
             string inicioWhile = "while" + cWhile;
-            string finWhile = "finWhile" + cWhile++;
+            string finWhile = "finWhile" + cWhile;
+            if (!ejecutado)
+                cWhile++;
             match("while");
             match("(");
             int posicionAct = position - 1;
@@ -515,7 +521,9 @@ namespace Semantica
         private void Do(bool evaluacion, bool ejecutado)
         {
             string inicioDo = "do" + cDo;
-            string finDo = "finDo" + cDo++;
+            string finDo = "finDo" + cDo;
+            if (!ejecutado)
+                cDo++;
             match("do");
             int posicionAct = position - 1;
             int lineaAct = linea;
@@ -550,7 +558,9 @@ namespace Semantica
         private void For(bool evaluacion, bool ejecutado)
         {
             string inicioFor = "for" + cFor;
-            string finFor = "endfor" + cFor++;
+            string finFor = "endfor" + cFor;
+            if (!ejecutado)
+                cFor++;
             match("for");
             match("(");
             Asignacion(evaluacion, ejecutado);

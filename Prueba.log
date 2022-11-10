@@ -1,5 +1,5 @@
 Archivo: prueba.cpp
-Compilado: El 09/11/2022 a las 11:09:05
+Compilado: El 09/11/2022 a las 22:59:10
 
 
 Variables: 
@@ -9,10 +9,10 @@ pi Float 0
 resultado Float 0
 a Int 258
 d Int 0
-altura Int 10
+altura Int 100
 cinco Int 0
 x Float 0
 y Char 2
 i Int 0
-j Int 9
-k Int 20
+j Int 99
+k Int 200
